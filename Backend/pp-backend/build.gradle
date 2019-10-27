@@ -7,6 +7,7 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -14,8 +15,11 @@ dependencies {
     implementation "io.ktor:ktor-server-core:1.2.4"
     implementation "io.ktor:ktor-server-netty:1.2.4"
     implementation "ch.qos.logback:logback-classic:1.2.3"
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // MSQL
+    implementation 'org.jetbrains.exposed:exposed:0.16.1'
+    implementation 'mysql:mysql-connector-java:5.1.46'
 }
 
 compileKotlin {
