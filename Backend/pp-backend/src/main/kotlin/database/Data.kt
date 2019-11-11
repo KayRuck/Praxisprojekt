@@ -5,21 +5,6 @@ import org.jetbrains.exposed.sql.Table
 
 
 
-
-/*
-data class UserData (
-    val username: String,
-    val password: String,
-    val email: String,
-    val contact: String,
-    val loc_lat: Double,
-    val loc_lang: Double
-)
-data class Module (
-    val title: String,
-    val description: String
-)
-*/
 object User : Table("users") {
     val id = integer("userID").autoIncrement().primaryKey()
     val username = varchar("username", 25)
@@ -64,21 +49,18 @@ object Course : Table("Course") {
 }
 
 object LocToCourse : Table("LocationToCourse"){
-    val id = integer("LocationToCourse").autoIncrement().primaryKey()
-    val fk_teachLocID = reference("teachLocID", TeachLoc.id)
-    val fk_courseID = reference("courseID", Course.id)
+    val fk_teachLocID = reference("teachLocID", TeachLoc.id).primaryKey(0)
+    val fk_courseID = reference("courseID", Course.id).primaryKey(1)
 }
 
 object UserToModule : Table("UserToModule"){
-    val id = integer("UserToModule").autoIncrement().primaryKey()
-    val fk_UserID = reference("userID", User.id)
-    val fk_moduleID = reference("moduleID", Module.id)
+    val fk_UserID = reference("userID", User.id).primaryKey(0)
+    val fk_moduleID = reference("moduleID", Module.id).primaryKey(1)
 }
 
 object UserToCourse : Table("UserToCourse"){
-    val id = integer("UserToCourse").autoIncrement().primaryKey()
-    val fk_UserID = reference("userID", User.id)
-    val fk_courseID = reference("courseID", Course.id)
+    val fk_UserID = reference("userID", User.id).primaryKey(0)
+    val fk_courseID = reference("courseID", Course.id).primaryKey(1)
 
 }
 

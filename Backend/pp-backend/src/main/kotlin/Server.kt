@@ -9,6 +9,11 @@ import io.ktor.server.netty.NettyApplicationEngine
 
 class Server {
 
+    val database = Database.Companion.connect("jdbc:mysql://localhost:3306/praxisprojekt",
+            driver = "com.mysql.jdbc.Driver", user = "root", password = "")
+
+
+
     private val server : NettyApplicationEngine = embeddedServer(Netty, port = 5555) {
         routing {
             get("/") {

@@ -8,11 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.example.praxisprojekt.R
+import com.example.praxisprojekt.viewModels.SettingViewModel
 
-class Setting : Fragment() {
+class SettingFragment : Fragment() {
 
     companion object {
-        fun newInstance() = Setting()
+        fun newInstance() = SettingFragment()
     }
 
     private lateinit var viewModel: SettingViewModel

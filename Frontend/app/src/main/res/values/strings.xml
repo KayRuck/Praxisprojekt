@@ -13,4 +13,9 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="login">Login</string>
+    <string name="register">Registrieren</string>
+    <string name="password_forgot">Passwort Vergessen?</string>
+    <string name="logo">Logo</string>
+    <string name="username">Username</string>
 </resources>

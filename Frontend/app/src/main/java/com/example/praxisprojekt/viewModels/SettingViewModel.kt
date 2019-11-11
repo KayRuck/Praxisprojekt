@@ -1,6 +1,6 @@
-package com.example.praxisprojekt.fragmente
+package com.example.praxisprojekt.viewModels
 
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel
 
 class SettingViewModel : ViewModel() {
     // TODO: Implement the ViewModel
