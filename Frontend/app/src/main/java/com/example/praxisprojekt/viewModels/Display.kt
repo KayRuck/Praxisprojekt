@@ -1,7 +1,7 @@
 package com.example.praxisprojekt.viewModels
 
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel
 
-class MarketViewModel : ViewModel() {
+class Display : ViewModel() {
     // TODO: Implement the ViewModel
 }

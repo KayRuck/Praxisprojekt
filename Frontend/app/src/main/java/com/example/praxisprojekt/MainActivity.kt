@@ -11,6 +11,7 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
+import com.example.praxisprojekt.fragmente.SearchFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -68,11 +69,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> {
                 // Handle the camera action
             }
-            R.id.nav_gallery -> {
+            R.id.nav_note -> {
 
             }
             R.id.nav_slideshow -> {
 
+            }
+            R.id.nav_search -> {
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, SearchFragment()).commit()
             }
             R.id.nav_tools -> {
 
