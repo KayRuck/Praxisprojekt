@@ -21,7 +21,6 @@ class DatabaseService {
 
         transaction {
 
-            //TODO: DROP IF EXIST bzw. den Foreign Key Check auf 0 setzen --> Wie im SQL File oder Alternative Suchen
             SchemaUtils.drop(Users, Modules, TeachLocs, InReturns, Courses, LocToCourses, UserToModules, UserToCourses)
             SchemaUtils.create(Users, Modules, TeachLocs, InReturns, Courses, LocToCourses, UserToModules, UserToCourses)
         }
