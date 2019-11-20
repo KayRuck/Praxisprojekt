@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.example.praxisprojekt.R
+import com.example.praxisprojekt.viewModels.ProfileViewModel
 
 class ProfileFragment : Fragment() {
 

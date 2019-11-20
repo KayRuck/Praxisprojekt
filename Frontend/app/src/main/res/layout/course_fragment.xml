@@ -12,7 +12,7 @@
             tools:context=".ui.main.PlaceholderFragment">
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_display_activity"
+                android:id="@+id/recyclerView_display"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="4dp"
@@ -32,18 +32,6 @@
                 android:layout_height="56dp"
                 android:layout_alignEnd="@+id/view_pager_dispaly"
                 android:layout_alignBottom="@+id/view_pager_dispaly"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
-                app:backgroundTint="@color/colorPrimary"
-                app:borderWidth="0.5dp"
-                app:maxImageSize="50dp" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/displayButton_l2"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_above="@+id/displayButton_l"
-                android:layout_alignEnd="@+id/view_pager_dispaly"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
                 app:backgroundTint="@color/colorPrimary"

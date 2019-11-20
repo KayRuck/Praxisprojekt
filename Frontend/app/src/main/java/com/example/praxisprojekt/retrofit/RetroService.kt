@@ -12,8 +12,8 @@ interface RetroService {
     @PUT("/users")
     fun updateUsers(): Call
 
-
-
+    @GET("/courses")
+    fun getAllCourses(): Call
 
 
 }

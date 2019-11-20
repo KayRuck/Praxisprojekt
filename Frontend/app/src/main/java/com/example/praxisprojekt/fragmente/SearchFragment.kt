@@ -39,7 +39,7 @@ class SearchFragment : Fragment() {
             runBlocking {
 
 
-                val result = HttpClient().get<String>("duckduckgo.com/")
+                val result = HttpClient().get<String>("192.168.0.185:5555/")
                 val tw: TextView = rootView.search_tw
                 tw.text = result
 

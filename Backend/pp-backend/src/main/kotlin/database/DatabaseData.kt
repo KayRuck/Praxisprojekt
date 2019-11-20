@@ -21,21 +21,21 @@ object Users : Table("Users") {
 }
 
 object Modules : Table("Modules") {
-    val id = integer("moduleID").autoIncrement("seq_mod").primaryKey()
+    val id = integer("moduleID").primaryKey()
     val title = varchar("title", 255)
     val description = varchar("description", 255).nullable()
 }
 
 // Teaching Locations - Ort der Nachhilfe
 object TeachLocs : Table("TeachLocs") {
-    val id = integer("teachLocID").autoIncrement("seq_teaLoc").primaryKey()
+    val id = integer("teachLocID").primaryKey()
     val title = varchar("title", 255)
     val description = varchar("description", 255).nullable()
 }
 
 // In Return/Consideration - Gegenleistung
 object InReturns : Table("InReturns") {
-    val id = integer("returnID").autoIncrement("seq_ret").primaryKey()
+    val id = integer("returnID").primaryKey()
     val title = varchar("title", 255)
     val description = varchar("description", 255).nullable()
 }
@@ -43,16 +43,15 @@ object InReturns : Table("InReturns") {
 object Courses : Table("Courses") {
     val id = integer("courseID").autoIncrement("seq_cou").primaryKey()
     val title = varchar("title", 25)
-    val description = varchar("description", 25)
-    val students = integer("number of Students")
-    val state = Boolean
-    val ad_loc_lat = double("latitude")
-    val ad_loc_lang = double("longitude")
-    val privateUsage = Boolean
+    var description = varchar("description", 25)
+    val state = bool("activity state")
+    val cLocLat = double("latitude")
+    val cLocLang = double("longitude")
+    val privateUsage = bool("private usage")
 
-    val fk_creatorID = reference("creatorID", Users.id)
-    val fk_returnID = reference("returnID", InReturns.id)
-    val fk_modulesID = reference("moduleID", Modules.id)
+    val fk_creator = reference("creatorID", Users.id)
+    val fk_return = reference("returnID", InReturns.id)
+    val fk_modules = reference("moduleID", Modules.id)
 }
 
 /*Zwischen Tabellen*/
@@ -69,6 +68,5 @@ object UserToModules : Table("UserToModules"){
 object UserToCourses : Table("UserToCourses"){
     val fk_UserID = reference("userID", Users.id).primaryKey(0)
     val fk_courseID = reference("courseID", Courses.id).primaryKey(1)
-
 }
 

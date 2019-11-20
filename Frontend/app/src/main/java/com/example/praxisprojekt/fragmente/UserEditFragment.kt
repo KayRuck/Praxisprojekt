@@ -8,26 +8,26 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.example.praxisprojekt.R
-import com.example.praxisprojekt.viewModels.Display
+import com.example.praxisprojekt.viewModels.UserEditViewModel
 
-class DisplayFragment : Fragment() {
+class UserEditFragment : Fragment() {
 
     companion object {
-        fun newInstance() = DisplayFragment()
+        fun newInstance() = UserEditFragment()
     }
 
-    private lateinit var viewModel: Display
+    private lateinit var viewModel: UserEditViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.display_fragment, container, false)
+        return inflater.inflate(R.layout.user_edit_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(Display::class.java)
+        viewModel = ViewModelProviders.of(this).get(UserEditViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

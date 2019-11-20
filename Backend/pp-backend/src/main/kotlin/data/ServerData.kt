@@ -1,5 +1,4 @@
-package database
-
+package data
 
 /**
  *  Data Structure for Kotlin Server - Client
@@ -14,7 +13,7 @@ data class User(
     val loc_lang: Double
 )
 
-data class Module(
+data class Mod(
     val id: Int,
     val title: String,
     val description: String
@@ -37,15 +36,14 @@ data class Course(
     val id: Int,
     val title: String,
     val description: String,
-    val students: Int,
     val state: Boolean,
-    val ad_loc_lat: Double,
-    val ad_loc_lang: Double,
+    val cLocLat: Double,
+    val cLocLang: Double,
     val privateUsage: Boolean,
 
-    val fk_creatorID: User,
-    val fk_returnID: InReturn,
-    val fk_modulesID: Module
+    val fk_creator: Int, //User
+    val fk_return: Int,  //InReturn
+    val fk_modules: Int  //Mod
 )
 
 /*Zwischen Tabellen*/
@@ -56,7 +54,7 @@ data class LocToCourse(
 
 data class UserToModule(
     val fk_UserID: User,
-    val fk_moduleID: Module
+    val fk_modID: Mod
 )
 
 data class UserToCourse(

@@ -29,9 +29,10 @@
 
         <TextView
                 android:id="@+id/item_title"
-                android:layout_width="match_parent"
+                android:layout_width="232dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/item_icon"
+                android:layout_marginStart="5dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
@@ -41,11 +42,11 @@
 
         <TextView
                 android:id="@+id/item_tags"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_width="233dp"
+                android:layout_height="101dp"
                 android:layout_below="@+id/item_title"
                 android:layout_alignBaseline="@+id/item_icon"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="8dp"

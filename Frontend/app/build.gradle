@@ -47,14 +47,16 @@ dependencies {
     //okhttp3 & Retrofit2, Retrofit GSON Converter
     implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+
     // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
-    implementation ("com.squareup.retrofit2:retrofit:$retrofitVersion"){ exclude module: 'okhttp' }
+    // GSON später ersetzen durch Moshi https://github.com/square/moshi
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion") { exclude module: 'okhttp' }
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
 
 }

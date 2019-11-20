@@ -15,7 +15,10 @@ dependencies {
     implementation "io.ktor:ktor-server-core:1.2.4"
     implementation "io.ktor:ktor-server-netty:1.2.4"
     implementation "ch.qos.logback:logback-classic:1.2.3"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk11"
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk11"
+
+    // json support
+    implementation "com.google.code.gson:gson:1.7.2"
 
     // MSQL
     implementation 'org.jetbrains.exposed:exposed:0.16.1'

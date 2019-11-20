@@ -1,10 +1,14 @@
+import data.TestData
 import database.DatabaseService
 
 fun main() {
 
     val db = DatabaseService()
-    val test = database.TestData()
-    test.creation()
+
+   //Testing
+    val test = TestData()
+    test.userCreation()
+
     val server = Server(db)
     server.start()
 }
