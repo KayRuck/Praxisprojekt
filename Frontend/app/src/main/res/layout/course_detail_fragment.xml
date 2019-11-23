@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/frameLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragmente.CourseDetailFragment">
+
+    <TextView
+            android:id="@+id/detailCourseTitleTV"
+            android:layout_width="240dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="96dp"
+            android:text="Title des Kurses"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/detailCourseDescriptionTV"
+            android:layout_width="240dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="30dp"
+            android:text="Beschreibung des Kurses"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailCourseTitleTV" />
+
+    <TextView
+            android:id="@+id/detailCoursePrivateTV"
+            android:layout_width="240dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="30dp"
+            android:text="Nutzung"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailCourseDescriptionTV" />
+
+    <TextView
+            android:id="@+id/detailCourseModuleTV"
+            android:layout_width="240dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="30dp"
+            android:text="Modul"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailCoursePrivateTV" />
+
+    <TextView
+            android:id="@+id/detailCourseInReturnTV"
+            android:layout_width="240dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="30dp"
+            android:text="Gegenleistung"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailCourseModuleTV" />
+</androidx.constraintlayout.widget.ConstraintLayout>

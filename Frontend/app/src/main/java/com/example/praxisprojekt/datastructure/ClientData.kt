@@ -1,4 +1,4 @@
-package datastructure
+package com.example.praxisprojekt.datastructure
 
 /**
  *  Data Structure for Kotlin Server - Client
@@ -26,15 +26,15 @@ enum class TeachLocs (val int: Int, var title : String, var desc : String?){
 
     TEACH(0, "Beim Lehrer", ""),
     STUD(1, "Beim Studenten", "Informatik - TI, ITM, MI, AI"),
-    //TH(2, "In der TH", "Informatik - TI, ITM, MI, AI"),
+    TH(2, "An der TH", "Informatik - TI, ITM, MI, AI"),
     ONLINE(3, "Online Beratung", "Informatik - WI")
 }
 
 enum class InReturns (val int: Int, var title : String, var desc : String?){
-    MONEY(0, "Geld", ""),
+    MONEY(0, "Bezahlung", ""),
     HELP(1, "Hilfe in anderen Fächern", ""),
-    MENSA(2, "Ein Mensa essen", ""),
-    KAFFEE(3, "Einen Kaffee", "")
+    MENSA(2, "Ein Essen in der Mensa", ""),
+    COFFEE(3, "Kaffee", "")
 }
 
 data class Course(
@@ -46,8 +46,8 @@ data class Course(
     val privateUsage: Boolean,
 
     val fk_creator: Int, //User
-    val fk_return: InReturns,  //InReturn
-    val fk_modules: Mods  //Mod
+    val fk_return: Int,  //InReturn
+    val fk_modules: Int  //Mod
 )
 
 /*Zwischen Tabellen

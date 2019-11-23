@@ -10,15 +10,9 @@ import android.widget.Button
 import android.widget.TextView
 
 import com.example.praxisprojekt.R
-import com.example.praxisprojekt.retrofit.RetroService
 import com.example.praxisprojekt.viewModels.SearchViewModel
-import io.ktor.client.HttpClient
-import io.ktor.client.request.get
 import kotlinx.android.synthetic.main.search_fragment.view.*
 import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchFragment : Fragment() {
 
@@ -35,15 +29,6 @@ class SearchFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.search_fragment, container, false)
         val btn: Button = rootView.search_btn
         btn.setOnClickListener {
-
-            runBlocking {
-
-
-                val result = HttpClient().get<String>("192.168.0.185:5555/")
-                val tw: TextView = rootView.search_tw
-                tw.text = result
-
-            }
 
         }
 

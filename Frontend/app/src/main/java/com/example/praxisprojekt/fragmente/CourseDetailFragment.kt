@@ -8,26 +8,26 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.example.praxisprojekt.R
-import com.example.praxisprojekt.viewModels.ProfileViewModel
+import com.example.praxisprojekt.viewModels.CourseDetailViewModel
 
-class ProfileFragment : Fragment() {
+class CourseDetailFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ProfileFragment()
+        fun newInstance() = CourseDetailFragment()
     }
 
-    private lateinit var viewModel: ProfileViewModel
+    private lateinit var viewModel: CourseDetailViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.profile_fragment, container, false)
+        return inflater.inflate(R.layout.course_detail_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(CourseDetailViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

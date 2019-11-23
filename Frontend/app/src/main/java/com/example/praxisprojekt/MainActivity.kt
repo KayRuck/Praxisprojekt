@@ -11,8 +11,8 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
-import com.example.praxisprojekt.fragmente.CourseFragment
-import com.example.praxisprojekt.fragmente.SearchFragment
+import android.widget.FrameLayout
+import com.example.praxisprojekt.fragmente.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -23,20 +23,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
+
+
+        if (savedInstanceState != null) return
+        else {
+            val firstFrag = CourseFragment()
+            firstFrag.arguments = intent.extras
+            supportFragmentManager.beginTransaction().add(R.id.fragment_container, firstFrag)
+                .commit()
+        }
+
+
     }
 
     override fun onBackPressed() {
@@ -68,20 +79,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_home -> {
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, CourseFragment()).commit()
-
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, CourseFragment()).commit()
             }
             R.id.nav_note -> {
 
             }
-            R.id.nav_slideshow -> {
-
+            R.id.nav_course -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, UserEditFragment()).commit()
             }
             R.id.nav_search -> {
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, SearchFragment()).commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, SearchFragment()).commit()
             }
-            R.id.nav_tools -> {
-
+            R.id.nav_sett -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, SettingFragment()).commit()
             }
             R.id.nav_share -> {
 

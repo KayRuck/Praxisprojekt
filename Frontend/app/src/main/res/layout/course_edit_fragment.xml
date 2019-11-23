@@ -1,13 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/editUserFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragmente.CourseEditFragment">
 
-    <TextView
+    <Button
+            android:id="@+id/editCourseButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Hello" />
+            android:layout_height="58dp"
+            android:text="Erstellen"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
-</FrameLayout>
+    <Switch
+            android:id="@+id/privateUsageSwitch"
+            android:layout_width="310dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:text="Gewerbliche Nutzung"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.455"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editCourseDescrition" />
+
+    <TextView
+            android:id="@+id/editCourseLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Wähle einen Ort"
+            app:layout_constraintBottom_toTopOf="@+id/locationSpinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.147"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+            android:id="@+id/editCourseDescrition"
+            android:layout_width="310dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:hint="Beschreibung"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.455"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editCourseTitle" />
+
+    <TextView
+            android:id="@+id/editCourseInReturnTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Wähle eine Gegenleitung"
+            app:layout_constraintBottom_toTopOf="@+id/inReturnSpinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.181"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+            android:id="@+id/moduleSpinner"
+            android:layout_width="310dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="56dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.455"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/locationSpinner" />
+
+    <EditText
+            android:id="@+id/editCourseTitle"
+            android:layout_width="310dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="84dp"
+            android:ems="10"
+            android:hint="Kurstitel"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.455"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+            android:id="@+id/inReturnSpinner"
+            android:layout_width="310dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="56dp"
+            android:hint="Wähle "
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.455"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/moduleSpinner" />
+
+    <TextView
+            android:id="@+id/editCourseModulTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Wähle ein Modul"
+            app:layout_constraintBottom_toTopOf="@+id/moduleSpinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.15"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+            android:id="@+id/editCourseSeekbarMoney10"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="16dp"
+            android:text="10"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toStartOf="@+id/editCourseSeekbar"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inReturnSpinner" />
+
+    <Spinner
+            android:id="@+id/locationSpinner"
+            android:layout_width="310dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="52dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.455"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/privateUsageSwitch" />
+
+    <TextView
+            android:id="@+id/editCourseSeekbarMoney"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="16dp"
+            android:text="100"
+            android:textAlignment="center"
+            app:layout_constraintStart_toEndOf="@+id/editCourseSeekbar"
+            app:layout_constraintTop_toBottomOf="@+id/inReturnSpinner" />
+
+    <SeekBar
+            android:id="@+id/editCourseSeekbar"
+            android:layout_width="250dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="16dp"
+            android:max="90"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.472"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inReturnSpinner" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
