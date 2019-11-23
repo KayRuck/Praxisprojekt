@@ -1,5 +1,9 @@
 package algorithm
 
+import data.Mod
+import data.User
+import database.Users
+
 class Matching {
 
     /**
@@ -14,9 +18,12 @@ class Matching {
      */
 
 
+    fun findMatch(objectiveUser : User, currentModule : Mod){
+        val userList = listOf<User>()
 
+//        userList.forEach{ it.moduleList.foreach{ it == currentModule then giveback User.id} }
+        // ID werden in einer zweiten Liste gespeichert und an den Server zurück gegeben
 
-
-
+    }
 
 }

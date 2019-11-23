@@ -1,19 +1,12 @@
 package database
 
 import data.Course
-import data.Mod
-import data.User
 import database.DatabaseService.Companion.dbQuery
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 
 object CourseService {
 
-
-
-    suspend fun getAllCourses() : List<Course> = DatabaseService.dbQuery {
+    suspend fun getAllCourses() : List<Course> = dbQuery {
         Courses.selectAll().mapNotNull { toCourse(it) }
     }
 
@@ -21,6 +14,10 @@ object CourseService {
         Courses.select {
             (Courses.id eq id)
         }.mapNotNull { toCourse(it) }.singleOrNull()
+    }
+
+    suspend fun deleteCourse(id: Int) : Boolean = dbQuery {
+        Courses.deleteWhere { Courses.id eq id } > 0
     }
 
     suspend fun addCourse(course: Course, creator : Int, module : Int, inReturn : Int ): Course {
@@ -41,7 +38,6 @@ object CourseService {
         }
         return getCourseByID(key!!)!!
     }
-
 
     private fun toCourse(row: ResultRow) : Course = Course(
         id = row[Courses.id],

@@ -11,9 +11,9 @@ import org.jetbrains.exposed.sql.Table
 
 
 object Users : Table("Users") {
-    val id = integer("person_ID").autoIncrement("seq_user").primaryKey()
-    val username = varchar("username", 25)
-    val password = varchar("password", 25)
+    val id = integer("userID").autoIncrement("seq_user").primaryKey()
+    val username = varchar("username", 255)
+    val password = varchar("password", 255)
     val email = varchar("email", 255)
     val contact = varchar("contact_private", 15).nullable()
     val loc_lat = double("Location_lat")
@@ -21,29 +21,36 @@ object Users : Table("Users") {
 }
 
 object Modules : Table("Modules") {
-    val id = integer("moduleID").primaryKey()
+    val id = integer("moduleID").autoIncrement().primaryKey()
     val title = varchar("title", 255)
     val description = varchar("description", 255).nullable()
 }
 
 // Teaching Locations - Ort der Nachhilfe
 object TeachLocs : Table("TeachLocs") {
-    val id = integer("teachLocID").primaryKey()
+    val id = integer("teachLocID").autoIncrement().primaryKey()
     val title = varchar("title", 255)
     val description = varchar("description", 255).nullable()
 }
 
 // In Return/Consideration - Gegenleistung
 object InReturns : Table("InReturns") {
-    val id = integer("returnID").primaryKey()
+    val id = integer("returnID").autoIncrement().primaryKey()
     val title = varchar("title", 255)
     val description = varchar("description", 255).nullable()
 }
+/*
+*   TODO: Fremdschlüssel ändern
+*   refernce Funtkioniet nicht mit nicht Prifmitven Datentypen
+*
+*
+*/
+
 
 object Courses : Table("Courses") {
     val id = integer("courseID").autoIncrement("seq_cou").primaryKey()
-    val title = varchar("title", 25)
-    var description = varchar("description", 25)
+    val title = varchar("title", 255)
+    var description = varchar("description", 255)
     val state = bool("activity state")
     val cLocLat = double("latitude")
     val cLocLang = double("longitude")

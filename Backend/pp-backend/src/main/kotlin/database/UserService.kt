@@ -6,9 +6,19 @@ import org.jetbrains.exposed.sql.*
 
 object UserService {
 
-
     suspend fun getAllUsers() : List<User> = dbQuery {
         Users.selectAll().mapNotNull{ toUser(it) }
+    }
+
+    suspend fun getUserByID(id: Int): User? = dbQuery {
+        Users.select {
+            (Users.id eq id)
+        }.mapNotNull { toUser(it) }
+            .singleOrNull()
+    }
+
+    suspend fun deleteUser(id: Int) : Boolean = dbQuery {
+        Users.deleteWhere { Users.id eq id } > 0
     }
 
     suspend fun addUser(user: User): User {
@@ -27,20 +37,6 @@ object UserService {
         return getUserByID(key!!)!!
     }
 
-    suspend fun getUserByID(id: Int): User? = dbQuery {
-        Users.select {
-            (Users.id eq id)
-        }.mapNotNull { toUser(it) }
-            .singleOrNull()
-    }
-
-    suspend fun deleteUser(id: Int) : Boolean = dbQuery {
-        Users.deleteWhere { Users.id eq id } > 0
-    }
-
-    /**
-     * Helper Methode for the Kotlin - Database Class Mapping
-     * */
     private fun toUser(row: ResultRow): User = User(
         id = row[Users.id],
         username = row[Users.username],
@@ -51,6 +47,5 @@ object UserService {
         loc_lang = row[Users.loc_lang]
 
     )
-
 
 }
