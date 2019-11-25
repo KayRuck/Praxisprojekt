@@ -42,19 +42,50 @@ class TestData {
             }
 
             Modules.insert {
-                it[title] = " "
-                it[description] = " "
+                it[title] = "Algorithmen und Programmierung"
+                it[description] = "Informatik"
             }
 
             Modules.insert {
-                it[title] = " "
-                it[description] = " "
+                it[title] = "Mathematik 1"
+                it[description] = "Informatik - TI, ITM, MI, AI"
+            }
+
+            Modules.insert {
+                it[title] = "Mathematik 2"
+                it[description] = "Informatik - TI, ITM, MI, AI"
+            }
+
+            Modules.insert {
+                it[title] = "Mathematik"
+                it[description] = "Informatik - WI"
+            }
+
+            Modules.insert {
+                it[title] = "Betriebswirtschaftslehre 1"
+                it[description] = "Informatik"
             }
 
             InReturns.insert {
-                it[title] = " "
-                it[description] = " "
+                it[title] = "Geld"
+                it[description] = "Ein festgelegter Stundenlohn"
             }
+
+            InReturns.insert {
+                it[title] = "Hilfe in anderen Fächern"
+                it[description] = "Gegenseitige Hilfe in schwachen Fächern"
+            }
+
+            InReturns.insert {
+                it[title] = "Ein Mensa essen"
+                it[description] = "Ausgabe eines Mensaessens (Zu Empfehlen bei kleineren Hilfen)"
+            }
+
+            InReturns.insert {
+                it[title] = "Geld"
+                it[description] = "Ausgabe eines Kaffees (Zu Empfehlen bei kleineren Hilfen)"
+            }
+
 
         }
 

@@ -1,10 +1,13 @@
 import com.google.gson.Gson
+import data.User
 import database.CourseService
 import database.DatabaseService
 import database.UserService
+import database.Users
 import io.ktor.application.call
 import io.ktor.features.origin
 import io.ktor.http.HttpStatusCode
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
@@ -18,7 +21,7 @@ import io.ktor.server.netty.NettyApplicationEngine
 class Server (databaseService: DatabaseService){
 
     private val gson = Gson()
-    // TODO: Bring den Server zum laufen, Netty Server mit Java 11 Unsafe bzw. die setAccessible(true)
+
     private val server : NettyApplicationEngine = embeddedServer(Netty, port = 5555) {
         routing {
             get("/") {
@@ -34,9 +37,14 @@ class Server (databaseService: DatabaseService){
                 println("-- Send $json")
                 call.respond(json)
             }
-            post("/users") {
-                // TODO: Mach das es Funktioniert
-//                call.respond(databaseService.addUser(call.receive()))
+            get("/course") {
+                val id = call.parameters["id"]?.toIntOrNull()
+
+                if ( id != null && id in 1..100000)
+                    call.respond(HttpStatusCode.OK, gson.toJson(CourseService.getCourseByID(id)!!))
+                else
+                    call.respond(HttpStatusCode.NotFound, "ID - Out of Range")
+
             }
             get("/users") {
                 val id = call.parameters["id"]?.toIntOrNull()
@@ -48,7 +56,15 @@ class Server (databaseService: DatabaseService){
 
             }
 
-            /*
+            post("/user/register") {
+
+                //val json = gson.fromJson<User>(call.receive<User>()., User.class)
+                //UserService.addUser(call.receive<User>())
+                //call.respond(HttpStatusCode.Created)
+                call.respond("Erhalten: " + call.receive())
+            }
+
+
             get("/matching/{id}&{Module}") {
                 val id = call.parameters["id"]?.toIntOrNull()
 
@@ -59,7 +75,7 @@ class Server (databaseService: DatabaseService){
 
             }
 
-             */
+
         }
     }
 

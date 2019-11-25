@@ -10,7 +10,7 @@ object CourseService {
         Courses.selectAll().mapNotNull { toCourse(it) }
     }
 
-    private suspend fun getCourseByID(id: Int) : Course? = dbQuery{
+    suspend fun getCourseByID(id: Int) : Course? = dbQuery{
         Courses.select {
             (Courses.id eq id)
         }.mapNotNull { toCourse(it) }.singleOrNull()
