@@ -9,19 +9,21 @@
 
     <Button
             android:id="@+id/editUserButton"
-            android:layout_width="362dp"
-            android:layout_height="58dp"
-            android:layout_marginBottom="16dp"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="28dp"
+            android:background="@color/colorPrimary"
             android:text="Erstellen"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.489"
+            app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
             android:id="@+id/editUserTextView"
-            android:layout_width="348dp"
-            android:layout_height="39dp"
+            android:layout_width="327dp"
+            android:layout_height="40dp"
             android:layout_marginTop="16dp"
             android:text="Erstellung des Profils"
             app:layout_constraintEnd_toEndOf="parent"
@@ -31,90 +33,90 @@
 
     <EditText
             android:id="@+id/editUserEMail"
-            android:layout_width="wrap_content"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:ems="10"
-            android:inputType="text|textEmailAddress"
             android:hint="E-Mail"
+            android:inputType="text|textEmailAddress"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.161"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editUserName" />
 
     <EditText
             android:id="@+id/editUserName"
-            android:layout_width="wrap_content"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="28dp"
             android:ems="10"
-            android:inputType="textPersonName"
             android:hint="Name"
+            android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.161"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editUserTextView" />
 
     <EditText
             android:id="@+id/editUserDescrition"
-            android:layout_width="wrap_content"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="12dp"
             android:ems="10"
-            android:inputType="textPersonName"
             android:hint="Beschreibung"
+            android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.161"
+            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editUserPassword2" />
+
+    <EditText
+            android:id="@+id/editUserPassword"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ems="10"
+            android:hint="Passwort"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editUserContact" />
 
     <EditText
-            android:id="@+id/editUserPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:hint="Passwort"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.161"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editUserEMail" />
-
-    <EditText
             android:id="@+id/editUserPassword2"
-            android:layout_width="wrap_content"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="12dp"
             android:ems="10"
             android:hint="Passwort wiederholen"
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.161"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editUserPassword" />
 
     <EditText
             android:id="@+id/editUserContact"
-            android:layout_width="wrap_content"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="12dp"
             android:ems="10"
-            android:inputType="phone"
             android:hint="Handynummer"
+            android:inputType="phone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.161"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editUserPassword2" />
+            app:layout_constraintTop_toBottomOf="@+id/editUserEMail" />
 
     <TextView
             android:id="@+id/editUserTV"
-            android:layout_width="332dp"
+            android:layout_width="320dp"
             android:layout_height="101dp"
-            android:layout_marginTop="52dp"
+            android:layout_marginTop="12dp"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.405"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editUserDescrition" />
 

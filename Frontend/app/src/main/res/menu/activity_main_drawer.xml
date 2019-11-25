@@ -17,10 +17,6 @@
                 android:icon="@drawable/ic_menu_display"
                 android:title="Meine Kurse"/>
         <item
-                android:id="@+id/nav_search"
-                android:icon="@drawable/ic_search"
-                android:title="Suche / Filter"/>
-        <item
                 android:id="@+id/nav_sett"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="@string/menu_settings"/>

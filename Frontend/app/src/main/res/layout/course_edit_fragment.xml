@@ -9,12 +9,15 @@
 
     <Button
             android:id="@+id/editCourseButton"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="28dp"
+            android:background="@color/colorPrimary"
             android:text="Erstellen"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent" />
 
     <Switch
@@ -23,21 +26,11 @@
             android:layout_height="30dp"
             android:layout_marginTop="20dp"
             android:text="Gewerbliche Nutzung"
+            android:theme="@style/CustomSwitch"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.455"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editCourseDescrition" />
-
-    <TextView
-            android:id="@+id/editCourseLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="Wähle einen Ort"
-            app:layout_constraintBottom_toTopOf="@+id/locationSpinner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.147"
-            app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
             android:id="@+id/editCourseDescrition"
@@ -56,28 +49,38 @@
             android:id="@+id/editCourseInReturnTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:text="Wähle eine Gegenleitung"
             app:layout_constraintBottom_toTopOf="@+id/inReturnSpinner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.181"
             app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+            android:id="@+id/editCourseInReturnTV2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Wähle eine Gegenleitung"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.181"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editCourseSeekbar" />
+
     <Spinner
             android:id="@+id/moduleSpinner"
             android:layout_width="310dp"
             android:layout_height="30dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="36dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.455"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locationSpinner" />
+            app:layout_constraintTop_toBottomOf="@+id/privateUsageSwitch" />
 
     <EditText
             android:id="@+id/editCourseTitle"
             android:layout_width="310dp"
             android:layout_height="40dp"
-            android:layout_marginTop="84dp"
+            android:layout_marginTop="50dp"
             android:ems="10"
             android:hint="Kurstitel"
             android:inputType="textPersonName"
@@ -90,7 +93,7 @@
             android:id="@+id/inReturnSpinner"
             android:layout_width="310dp"
             android:layout_height="30dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="44dp"
             android:hint="Wähle "
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.455"
@@ -101,7 +104,6 @@
             android:id="@+id/editCourseModulTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:text="Wähle ein Modul"
             app:layout_constraintBottom_toTopOf="@+id/moduleSpinner"
             app:layout_constraintEnd_toEndOf="parent"
@@ -120,16 +122,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inReturnSpinner" />
 
-    <Spinner
-            android:id="@+id/locationSpinner"
-            android:layout_width="310dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="52dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.455"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/privateUsageSwitch" />
-
     <TextView
             android:id="@+id/editCourseSeekbarMoney"
             android:layout_width="30dp"
@@ -137,6 +129,8 @@
             android:layout_marginTop="16dp"
             android:text="100"
             android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/editCourseSeekbar"
             app:layout_constraintTop_toBottomOf="@+id/inReturnSpinner" />
 
@@ -150,5 +144,47 @@
             app:layout_constraintHorizontal_bias="0.472"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inReturnSpinner" />
+
+    <CheckBox
+            android:id="@+id/checkbockTHKoeln"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="Campus Gummersbach"
+            app:buttonTint="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editCourseInReturnTV2" />
+
+    <CheckBox
+            android:id="@+id/checkboxTeacher"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="Beim Lehrer"
+            app:buttonTint="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toStartOf="@+id/checkbockTHKoeln"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editCourseInReturnTV2" />
+
+    <CheckBox
+            android:id="@+id/checkboxStudent"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="Beim Schüler"
+            app:buttonTint="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toStartOf="@+id/checkboxOnline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkboxTeacher" />
+
+    <CheckBox
+            android:id="@+id/checkboxOnline"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="Online"
+            app:buttonTint="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkbockTHKoeln" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

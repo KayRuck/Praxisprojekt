@@ -1,19 +1,21 @@
 package com.example.praxisprojekt.fragmente
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.SeekBar
+import android.widget.Toast
 import android.widget.Toast.makeText
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import com.example.praxisprojekt.InReturns
+import com.example.praxisprojekt.Mods
 import com.example.praxisprojekt.R
-import com.example.praxisprojekt.datastructure.Course
+import com.example.praxisprojekt.TeachLocs
 import com.example.praxisprojekt.viewModels.CourseEditViewModel
-import com.example.praxisprojekt.datastructure.InReturns
-import com.example.praxisprojekt.datastructure.Mods
-import com.example.praxisprojekt.datastructure.TeachLocs
 import kotlinx.android.synthetic.main.course_edit_fragment.view.*
 
 
@@ -60,9 +62,9 @@ class CourseEditFragment : Fragment() {
     ): View? {
         rootView = inflater.inflate(R.layout.course_edit_fragment, container, false)
 
-        setSeekBar()
-        fillSpinners()
-
+//        setSeekBar()
+//        fillSpinners()
+//        createCourse()
 
         val nSwitch = rootView.privateUsageSwitch
         nSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -90,8 +92,8 @@ class CourseEditFragment : Fragment() {
 
         return rootView
     }
-
-
+/*
+    // TODO: Parse to JSON
     private fun createCourse(): Course {
 
         val currentCourse = Course(
@@ -120,7 +122,7 @@ class CourseEditFragment : Fragment() {
         return currentCourse
     }
 
-
+*/
     /**
      *  TODO: Comment Code
      *  Used Tutorial: https://www.geeksforgeeks.org/spinner-in-kotlin/
@@ -131,9 +133,9 @@ class CourseEditFragment : Fragment() {
     private fun fillSpinners() {
         val spinnerIR = rootView.inReturnSpinner
         val spinnerM = rootView.moduleSpinner
-        val spinnerL = rootView.locationSpinner
+        // val spinnerL = rootView.locationSpinner
 
-
+        /*
         // TODO: CHANGE von Spinner zu einer Mehr auswahl (Mehrere Können ausgewählt werden)
         if (spinnerL != null) {
             val adapter = ArrayAdapter(
@@ -161,7 +163,7 @@ class CourseEditFragment : Fragment() {
                 }
             }
         }
-
+        */
         if (spinnerIR != null) {
             val adapter = ArrayAdapter(
                 context!!,

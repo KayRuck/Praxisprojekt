@@ -1,10 +1,10 @@
-package com.example.praxisprojekt.datastructure
+package com.example.praxisprojekt
 
 /**
  *  Data Structure for Kotlin Server - Client
  * */
 data class User(
-    val id: Int,
+    val id: Int?,
     val username: String,
     val password: String,
     val email: String,
@@ -38,6 +38,7 @@ enum class InReturns (val int: Int, var title : String, var desc : String?){
 }
 
 data class Course(
+    val id: Int?,
     val title: String,
     val description: String,
     val state: Boolean,
@@ -67,3 +68,10 @@ data class UserToCourse(
 )
 
 */
+
+enum class Constants(val string: String){
+    API_BASE_URL("http://192.168.0.185:5555")
+
+
+
+}

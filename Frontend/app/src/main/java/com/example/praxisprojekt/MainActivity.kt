@@ -1,18 +1,17 @@
 package com.example.praxisprojekt
 
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
+import android.view.Menu
 import android.view.MenuItem
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.view.Menu
-import android.widget.FrameLayout
-import com.example.praxisprojekt.fragmente.*
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.example.praxisprojekt.fragmente.CourseFragment
+import com.example.praxisprojekt.fragmente.SettingFragment
+import com.example.praxisprojekt.fragmente.UserEditFragment
+import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -64,7 +63,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
-
+/*
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -74,7 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             else -> super.onOptionsItemSelected(item)
         }
     }
-
+*/
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
@@ -83,15 +82,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .replace(R.id.fragment_container, CourseFragment()).commit()
             }
             R.id.nav_note -> {
-
-            }
-            R.id.nav_course -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, UserEditFragment()).commit()
             }
-            R.id.nav_search -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, SearchFragment()).commit()
+            R.id.nav_course -> {
+
             }
             R.id.nav_sett -> {
                 supportFragmentManager.beginTransaction()

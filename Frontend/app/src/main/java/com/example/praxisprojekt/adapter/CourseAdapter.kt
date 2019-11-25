@@ -1,13 +1,13 @@
 package com.example.praxisprojekt.adapter
 
-import androidx.recyclerview.widget.RecyclerView
-import android.widget.TextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.example.praxisprojekt.Mods
 import com.example.praxisprojekt.R
 import com.example.praxisprojekt.retrofit.RetroCourse
-import com.example.praxisprojekt.datastructure.Mods
 
 class CourseAdapter(item: List<RetroCourse>) : RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
 

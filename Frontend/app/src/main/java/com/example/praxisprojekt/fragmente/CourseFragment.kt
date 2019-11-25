@@ -1,21 +1,21 @@
 package com.example.praxisprojekt.fragmente
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.praxisprojekt.R
 import com.example.praxisprojekt.adapter.CourseAdapter
-import com.example.praxisprojekt.viewModels.CourseViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import androidx.recyclerview.widget.DefaultItemAnimator
 import com.example.praxisprojekt.retrofit.RetroCourse
 import com.example.praxisprojekt.retrofit.RetroService
+import com.example.praxisprojekt.viewModels.CourseViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,11 +25,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class CourseFragment : Fragment() {
 
-    lateinit var serverCourseData : List<RetroCourse>
-
+    lateinit var serverCourseData: List<RetroCourse>
     private lateinit var viewModel: CourseViewModel
     private lateinit var rootView: View
     private lateinit var rec: RecyclerView
+//    private lateinit var retrofitClient: RetrofitClient
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +61,7 @@ class CourseFragment : Fragment() {
             fragTransaction1.replace(R.id.fragment_container, CourseFragment()).commit()
         }
 
-        val editBtn : FloatingActionButton = view.findViewById(R.id.displayButton_l)
+        val editBtn: FloatingActionButton = view.findViewById(R.id.displayButton_l)
         editBtn.setOnClickListener {
             val fragTransition2 = fragmentManager!!.beginTransaction()
             fragTransition2.replace(R.id.fragment_container, CourseEditFragment()).commit()
@@ -72,18 +73,15 @@ class CourseFragment : Fragment() {
 
     private fun callCourses() {
 
-        val API_BASE_URL = "http://192.168.0.185:5555"
-        val API_BASE_URL2 = "http://10.0.2.2:5555"
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(API_BASE_URL)
+        val retroClient = Retrofit.Builder()
+            .baseUrl("http://192.168.0.185:5555/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        val retroService: RetroService = retrofit.create(RetroService::class.java)
+        val retroService = retroClient.create(RetroService::class.java)
         val call = retroService.getAllCourses()
 
-        Log.d("CourseFragment", "callCourses")
+        Log.d("COURSE CALL COURSE", "BEGINN")
 
         call.enqueue(object : Callback<List<RetroCourse>> {
             override fun onResponse(
@@ -92,20 +90,23 @@ class CourseFragment : Fragment() {
             ) {
                 if (response.isSuccessful) {
 
-                    Log.d("CourseFragment", "response successful")
-                    Log.d("CourseFragment", "body: ${response.body().toString()}")
+                    Log.d("COURSE CALL COURSE", "response successful")
+                    Log.d("COURSE CALL COURSE", "body: ${response.body().toString()}")
                     serverCourseData = response.body()!!
                     createAdapter()
-                }
+                } else Log.d("COURSE CALL COURSE", " response not Successful: ${response.code()}")
             }
 
             override fun onFailure(call: Call<List<RetroCourse>>, t: Throwable) {
-                Log.d("CourseFragment", "response failed - Cause: " + t.cause + " Message: " + t.message )
+                Log.d(
+                    "COURSE CALL COURSE",
+                    "response failed - Cause: " + t.cause + " Message: " + t.message + " Locallized Message " + t.localizedMessage +
+                            " StackTrace: " + t.stackTrace + " Suppressed: " + t.suppressed
+                )
             }
         })
 
     }
-
 
 
     private fun createAdapter() {

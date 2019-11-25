@@ -1,7 +1,9 @@
 package com.example.praxisprojekt.retrofit
 
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.PUT
 
 interface RetroService {
@@ -18,7 +20,8 @@ interface RetroService {
     @GET("/courses")
     fun getAllCourses(): Call<List<RetroCourse>>
 
-
+    @POST("/user/register")
+    fun createUser(@Body retroUser: RetroUser): Call<RetroUser>
 }
 
 /**
