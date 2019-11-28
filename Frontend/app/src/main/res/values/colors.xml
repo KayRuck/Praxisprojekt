@@ -10,10 +10,11 @@
     <color name="minti_green">#CCDFCB</color>
     <color name="red">#D62D20</color>
     <color name="white">#FFF</color>
+    <color name="black">#000</color>
 <!--
     <color name="basic_gray">#42221f1f</color>
     <color name="light_gray">#1c000000</color>
     <color name="turquoise">#46bdbf</color>
 
-    -->
+-->
 </resources>

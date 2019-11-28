@@ -11,6 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.praxisprojekt.fragmente.CourseFragment
 import com.example.praxisprojekt.fragmente.SettingFragment
 import com.example.praxisprojekt.fragmente.UserEditFragment
+import com.example.praxisprojekt.fragmente.UserFragment
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -86,7 +87,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .replace(R.id.fragment_container, UserEditFragment()).commit()
             }
             R.id.nav_course -> {
-
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, UserFragment()).commit()
             }
             R.id.nav_sett -> {
                 supportFragmentManager.beginTransaction()

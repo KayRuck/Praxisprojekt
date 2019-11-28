@@ -6,6 +6,7 @@ package com.example.praxisprojekt
 data class User(
     val id: Int?,
     val username: String,
+    val description: String,
     val password: String,
     val email: String,
     val contact: String?,

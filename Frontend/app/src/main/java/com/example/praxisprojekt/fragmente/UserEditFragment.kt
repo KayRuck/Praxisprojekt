@@ -50,7 +50,7 @@ class UserEditFragment : Fragment() {
                     "Password: $editPass ")
 
 
-            val retroUser = RetroUser(editName, editPass, editEmail, editContact, 0.0, 0.0)
+            val retroUser = RetroUser(editName, " ",editPass, editEmail, editContact, 0.0, 0.0)
             Log.d("CREATE USER: ", retroUser.toString())
             createUser(retroUser)
         }
@@ -80,8 +80,6 @@ class UserEditFragment : Fragment() {
 
 
         val retroService = retroClient.create(RetroService::class.java)
-
-
         val call: Call<RetroUser> = retroService.createUser(retroUser)
 
         call.enqueue(object : Callback<RetroUser> {
@@ -112,6 +110,9 @@ class UserEditFragment : Fragment() {
 
 
     }
+
+
+
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -5,15 +5,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragmente.UserFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+        <!-- Picture Source https://pixabay.com/photos/model-flowers-bouquet-of-flowers-1246028/ -->
         <ImageView
                 android:id="@+id/userImage"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:src="@color/colorPrimary"
+                android:src="@drawable/pic_pixabay_free_photos_men"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -22,33 +24,37 @@
 
         <TextView
                 android:id="@+id/userUsername"
-                android:layout_width="331dp"
+                android:layout_width="330dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:includeFontPadding="true"
                 android:text="userUsername"
+                android:textSize="24sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userImage" />
 
         <TextView
                 android:id="@+id/userDescription"
-                android:layout_width="333dp"
+                android:layout_width="330dp"
                 android:layout_height="43dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="userDescription"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.476"
+                app:layout_constraintHorizontal_bias="0.506"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userUsername" />
 
+        <!-- Picture Source https://www.flaticon.com/free-icon/quality_291527-->
         <ImageView
                 android:id="@+id/userMedal"
                 android:layout_width="45dp"
                 android:layout_height="44dp"
                 android:layout_marginTop="140dp"
-                android:src="?attr/colorAccent"
+                android:src="@drawable/pic_flaticon_medal_ranked_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.967"
                 app:layout_constraintStart_toStartOf="parent"
@@ -60,20 +66,20 @@
                 android:layout_height="50dp"
                 android:layout_marginBottom="28dp"
                 android:background="@color/colorPrimary"
-                android:textColor="@color/white"
                 android:text="Kontaktieren"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/userModuelRV"
-                android:layout_width="120dp"
-                android:layout_height="217dp"
+        <TextView
+                android:id="@+id/userModuleList"
+                android:layout_width="330dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.127"
+                app:layout_constraintHorizontal_bias="0.506"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userDescription" />
 
