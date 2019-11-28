@@ -13,6 +13,7 @@ import org.jetbrains.exposed.sql.Table
 object Users : Table("Users") {
     val id = integer("userID").autoIncrement("seq_user").primaryKey()
     val username = varchar("username", 255)
+    val description = varchar("description", 255)
     val password = varchar("password", 255)
     val email = varchar("email", 255)
     val contact = varchar("contact_private", 15).nullable()

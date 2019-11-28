@@ -27,6 +27,7 @@ object UserService {
         dbQuery {
             key = Users.insert {
                 it[username] = user.username
+                it[description] = user.description
                 it[email] = user.email
                 it[password] = user.password
                 it[contact] = user.contact
@@ -40,6 +41,7 @@ object UserService {
     private fun toUser(row: ResultRow): User = User(
         id = row[Users.id],
         username = row[Users.username],
+        description = row[Users.description],
         email = row[Users.email],
         password = row[Users.password],
         contact = row[Users.contact],

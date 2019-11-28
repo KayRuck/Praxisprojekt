@@ -17,6 +17,7 @@ class TestData {
             Users.insert {
                 it[username] = "Paulchen"
                 it[email] = "paulchen.panther@gmx.de"
+                it[description] = " "
                 it[password] = " "
                 it[contact] = "0152 0000001"
                 it[loc_lat] = 000.00
@@ -26,6 +27,7 @@ class TestData {
             Users.insert {
                 it[username] = "Obi-Wan"
                 it[email] = "obi_wan.gibtsboni@gmx.de"
+                it[description] = " "
                 it[password] = " "
                 it[contact] = "0152 0000001"
                 it[loc_lat] = 000.00
@@ -35,6 +37,7 @@ class TestData {
             Users.insert {
                 it[username] = "GregGurke"
                 it[email] = "Greg.dieGurke@gmx.de"
+                it[description] = " "
                 it[password] = " "
                 it[contact] = "0152 0000001"
                 it[loc_lat] = 000.00
