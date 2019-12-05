@@ -14,10 +14,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.response.respondText
-import io.ktor.routing.delete
-import io.ktor.routing.get
-import io.ktor.routing.post
-import io.ktor.routing.routing
+import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
@@ -75,6 +72,20 @@ class Server(databaseService: DatabaseService) {
                 }
 
             }
+
+            put("/user/{id}") {
+                val id = call.parameters["id"]?.toIntOrNull()
+                val response = call.receive<String>()
+                val responseUser = Gson().fromJson<User>(response, User::class.java)
+
+                checkIdRange(id) {
+                    call.respond(ok, gson.toJson(UserService.updateUser(responseUser)))
+                }
+
+
+            }
+
+
 /*
             get("/courses/{id}") {
                 val id = call.parameters["id"]?.toIntOrNull()
@@ -133,11 +144,10 @@ class Server(databaseService: DatabaseService) {
 
             get("/users/{id}/modules") {
                 val id = call.parameters["id"]?.toIntOrNull()
+                println("/users/{id}/modules ID - $id")
                 checkIdRange(id) {
                     call.respond(ok, gson.toJson(TempTableService.getModuleByUser(it)))
                 }
-
-
             }
 
             get("/matching/{id}&{module}") {

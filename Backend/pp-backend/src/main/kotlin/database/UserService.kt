@@ -39,6 +39,21 @@ object UserService {
     }
 
 
+    suspend fun updateUser(user : User) : User {
+
+        dbQuery {
+            Users.update {
+                it[username] = user.username
+                it[description] = user.description
+                it[email] = user.email
+                it[password] = user.password
+                it[contact] = user.contact
+                it[loc_lat] = user.loc_lat
+                it[loc_lang] = user.loc_lang
+            }
+        }
+        return getUserByID(user.id)!!
+    }
 
     private fun toUser(row: ResultRow): User = User(
         id = row[Users.id],
