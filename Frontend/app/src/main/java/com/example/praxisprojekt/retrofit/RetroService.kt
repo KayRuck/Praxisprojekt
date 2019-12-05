@@ -1,10 +1,7 @@
 package com.example.praxisprojekt.retrofit
 
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface RetroService {
 
@@ -18,11 +15,17 @@ interface RetroService {
     @GET("/courses")
     fun getAllCourses(): Call<List<RetroCourse>>
 
+    @GET("/users/{id}/modules")
+    fun getModulesFromUser(@Query("id") id : Int) : Call<List<String>>
+
     @POST("/user/register")
     fun createUser(@Body retroUser: RetroUser): Call<RetroUser>
 
-    @POST("/course/create")
+    @POST("/course/register")
     fun createCourse(@Body course: RetroCourse): Call<RetroCourse>
+
+    @PUT("/user/{id}")
+    fun updateUser(@Query("id") id : Int, @Body retroUser: RetroUser) : Call<RetroUser>
 
 }
 

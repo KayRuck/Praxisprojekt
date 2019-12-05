@@ -8,7 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.example.praxisprojekt.Mods
+import androidx.preference.PreferenceManager
+import com.example.praxisprojekt.MainActivity
 import com.example.praxisprojekt.R
 import com.example.praxisprojekt.retrofit.RetroService
 import com.example.praxisprojekt.retrofit.RetroUser
@@ -23,10 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class UserFragment : Fragment() {
 
-    /* private lateinit var rootView : View
-    private lateinit var name : String
-    private lateinit var desc : String
-    */
+    var modulListe = listOf<String>()
 
     companion object {
         fun newInstance() = UserFragment()
@@ -40,8 +38,16 @@ class UserFragment : Fragment() {
     ): View? {
         val rootView: View = inflater.inflate(R.layout.user_fragment, container, false)
 
-        callUserByID(1, rootView)
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+        val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
 
+        // TODO check if the id is valid > 0
+
+        getModulesFromUser(userID)
+
+        rootView.userModuleList.text = modulListe.toString()
+
+        callUserByID(userID, rootView)
         val contactBtn = rootView.userContactButton
 
         contactBtn.setOnClickListener {
@@ -60,6 +66,43 @@ class UserFragment : Fragment() {
         return rootView
     }
 
+    private fun getModulesFromUser(id: Int) {
+        val retroClient = Retrofit.Builder()
+            .baseUrl("http://192.168.0.185:5555/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val retroService = retroClient.create(RetroService::class.java)
+        val call = retroService.getModulesFromUser(id)
+
+        call.enqueue(object : Callback<List<String>> {
+            override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
+                if (!response.isSuccessful) {
+                    Log.d(
+                        "GET MODULES - NOT SUCCESS",
+                        "Body: ${response.body()} Code: ${response.code()} / ${response.message()} /  ${response.errorBody()}"
+                    )
+                }
+
+                Log.d(
+                    "GET MODULES - SUCCESS",
+                    "Body: ${response.body()} Code: ${response.code()} /  ${response.message()} /  ${response.errorBody()}"
+                )
+                modulListe = response.body()!!.toList()
+
+            }
+
+            override fun onFailure(call: Call<List<String>>, t: Throwable) {
+
+
+            }
+
+        })
+
+
+    }
+
+
     private fun callUserByID(id: Int, rootView: View) {
 
         val retroClient = Retrofit.Builder()
@@ -68,7 +111,7 @@ class UserFragment : Fragment() {
             .build()
 
         val retroService = retroClient.create(RetroService::class.java)
-        val call = retroService.getUserById(1)
+        val call = retroService.getUserById(id)
 
 
         Log.d("COURSE CALL User", "BEGINN")
@@ -82,23 +125,20 @@ class UserFragment : Fragment() {
             override fun onResponse(call: Call<RetroUser>, response: Response<RetroUser>) {
                 val desc = response.body()!!.description
 
-                rootView.userUsername.text = response.body()!!.username
 
+                rootView.userUsername.text = response.body()!!.username
                 if (desc == " " || desc == "") rootView.userDescription.text =
                     "Keine Beschreibung vorhanden"
                 else rootView.userDescription.text = response.body()!!.description
+//                rootView.userModuleList.text = listOf(
+//                    Mods.APMOD.title,
+//                    Mods.MATH1INFMOD.title,
+//                    Mods.MATH2INFMOD.title
+//                ).toString()
 
-                rootView.userModuleList.text = listOf(
-                    Mods.APMOD.title,
-                    Mods.MATH1INFMOD.title,
-                    Mods.MATH2INFMOD.title
-                ).toString()
             }
-
-
         })
     }
-
 
 
 }

@@ -16,11 +16,11 @@ data class User(
 
 enum class Mods (val int: Int, var title : String, var desc : String?) {
 
-    APMOD(0, "Algorithmen und Programmierung", "Informatik"),
-    MATH1INFMOD (1, "Mathematik 1", "Informatik - TI, ITM, MI, AI"),
-    MATH2INFMOD (2, "Mathematik 2", "Informatik - TI, ITM, MI, AI"),
-    MATHINFMOD (3, "Mathematik", "Informatik - WI"),
-    BWL1INFMOD (4, "Betriebswirtschaftslehre 1", "Informatik")
+    APMOD(1, "Algorithmen und Programmierung", "Informatik"),
+    MATH1INFMOD (2, "Mathematik 1", "Informatik - TI, ITM, MI, AI"),
+    MATH2INFMOD (3, "Mathematik 2", "Informatik - TI, ITM, MI, AI"),
+    MATHINFMOD (4, "Mathematik", "Informatik - WI"),
+    BWL1INFMOD (5, "Betriebswirtschaftslehre 1", "Informatik")
 }
 
 enum class TeachLocs (val int: Int, var title : String, var desc : String?){

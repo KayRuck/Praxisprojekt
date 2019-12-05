@@ -1,6 +1,7 @@
 package com.example.praxisprojekt.fragmente
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +12,20 @@ import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.example.praxisprojekt.InReturns
-import com.example.praxisprojekt.Mods
-import com.example.praxisprojekt.R
-import com.example.praxisprojekt.TeachLocs
+import androidx.preference.PreferenceManager
+import com.example.praxisprojekt.*
+import com.example.praxisprojekt.retrofit.RetroCourse
+import com.example.praxisprojekt.retrofit.RetroService
 import com.example.praxisprojekt.viewModels.CourseEditViewModel
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.course_edit_fragment.*
 import kotlinx.android.synthetic.main.course_edit_fragment.view.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 class CourseEditFragment : Fragment() {
@@ -42,14 +51,6 @@ class CourseEditFragment : Fragment() {
         Mods.BWL1INFMOD.title
     )
 
-    private val locationList = mutableListOf(
-        " ",
-        TeachLocs.TEACH.title,
-        TeachLocs.STUD.title,
-        TeachLocs.TH.title,
-        TeachLocs.ONLINE.title
-    )
-
     companion object {
         fun newInstance() = CourseEditFragment()
     }
@@ -62,9 +63,8 @@ class CourseEditFragment : Fragment() {
     ): View? {
         rootView = inflater.inflate(R.layout.course_edit_fragment, container, false)
 
-//        setSeekBar()
-//        fillSpinners()
-//        createCourse()
+        setSeekBar()
+        fillSpinners()
 
         val nSwitch = rootView.privateUsageSwitch
         nSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -79,50 +79,88 @@ class CourseEditFragment : Fragment() {
             makeText(context, message, Toast.LENGTH_SHORT).show()
         }
 
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+        val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
+
+
 
         rootView.editCourseButton.setOnClickListener {
+            val editTitle = rootView.editCourseTitle.text.toString()
+            val editDescr = rootView.editCourseDescrition.text.toString()
+            val editState = true
+            val editPrivateUsage = rootView.privateUsageSwitch.isChecked
 
+            val retroCourse = RetroCourse(
+                null,
+                editTitle,
+                editDescr,
+                editState,
+                0.0,
+                0.0,
+                editPrivateUsage,
+                userID,
+                currentReturn,
+                currentModule
+            )
+            createCourse(retroCourse)
 
-
+            Log.d("CREATE COURSE", retroCourse.toString())
         }
-
-        //val editTitle = rootView.editCourseTitle.text.toString()
-        //val editDescr = rootView.editCourseDescrition.text.toString()
-
 
         return rootView
     }
-/*
-    // TODO: Parse to JSON
-    private fun createCourse(): Course {
 
-        val currentCourse = Course(
-            rootView.editCourseTitle.text.toString(),
-            rootView.editCourseDescrition.text.toString(),
-            true,
-            0.0,
-            0.0,
-            rootView.privateUsageSwitch.isChecked,
-            0,
-            currentReturn,
-            currentModule
-        )
+    private fun createCourse(retroCourse: RetroCourse) {
+
+        val gson: Gson = GsonBuilder().setLenient().create()
+
+        val retroClient = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL.string)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+        val retroService = retroClient.create(RetroService::class.java)
+        val call: Call<RetroCourse> = retroService.createCourse(retroCourse)
+
+        call.enqueue(object : Callback<RetroCourse> {
+            override fun onFailure(call: Call<RetroCourse>, t: Throwable) {
+                Log.d(
+                    "CREATE USER FAIL",
+                    " - Message: ${t.message} Cause: ${t.cause} / ${t.localizedMessage} / ${t.stackTrace} "
+                )
+
+            }
+
+            override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>) {
+
+                if (!response.isSuccessful) {
+                    Log.d(
+                        "CREATE USER - NOT SUCCESS",
+                        "Body: $retroCourse Code: ${response.code()} / ${response.body()} / ${response.message()} /  ${response.errorBody()} / ${response.headers()}"
+                    )
+                }
+
+                val retroCourseResponse: RetroCourse? = response.body()
+                makeText(context, response.code().toString(), Toast.LENGTH_SHORT).show()
+                Log.d(
+                    "CREATE USER SUCCESS",
+                    " - Response Body: " + retroCourseResponse + " Code: " + response.code()
+                )
 
 
+                Log.d(
+                    "CREATE USER SUCCESS",
+                    " - Response Body: " + retroCourseResponse + " Code: " + response.code()
+                )
 
-        makeText(
-            context,
-            "Title: " + currentCourse.title + " Beschreibung: " + currentCourse.description +
-                    " Privat: " + currentCourse.privateUsage + " Gegenleistung: " + currentReturn +
-                    " Module: " + currentModule,
-            Toast.LENGTH_LONG
-        ).show()
+            }
 
+        })
 
-        return currentCourse
     }
 
-*/
+
+
     /**
      *  TODO: Comment Code
      *  Used Tutorial: https://www.geeksforgeeks.org/spinner-in-kotlin/
@@ -133,37 +171,7 @@ class CourseEditFragment : Fragment() {
     private fun fillSpinners() {
         val spinnerIR = rootView.inReturnSpinner
         val spinnerM = rootView.moduleSpinner
-        // val spinnerL = rootView.locationSpinner
 
-        /*
-        // TODO: CHANGE von Spinner zu einer Mehr auswahl (Mehrere Können ausgewählt werden)
-        if (spinnerL != null) {
-            val adapter = ArrayAdapter(
-                context!!,
-                android.R.layout.simple_spinner_item,
-                locationList
-            )
-            spinnerL.adapter = adapter
-
-            spinnerL.onItemSelectedListener = object :
-                AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
-                ) {
-                    makeText(
-                        context, "Ausgewählt: " + locationList[position], Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    makeText(
-                        context, "Bitte eine Gegenleistung auswählen", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-        */
         if (spinnerIR != null) {
             val adapter = ArrayAdapter(
                 context!!,
@@ -222,7 +230,7 @@ class CourseEditFragment : Fragment() {
         }
 
 
-        // TODO: Wenn Ort Uni gewählt ist muss der InReturn Punkt Money und die Seekbar ausgeblendet werden
+
     }
 
     /**
@@ -259,6 +267,28 @@ class CourseEditFragment : Fragment() {
 
 
         })
+
+    }
+
+
+    // TODO: Wenn Ort Uni gewählt ist muss der InReturn Punkt Money und die Seekbar ausgeblendet werden
+    // TODO: Bin Checkboxes to Course ID
+    private fun setCheckBoxes(){
+        val checkedLocations = mutableListOf<Boolean>()
+
+        checkedLocations.add(checkboxTeacher.isChecked)
+        checkedLocations.add(checkboxStudent.isChecked)
+        checkedLocations.add(checkboxTHKoeln.isChecked)
+        checkedLocations.add(checkboxOnline.isChecked)
+
+        val removeIR = InReturns.MONEY.title
+
+        if (checkboxTHKoeln.isChecked){
+                inReturnList.remove(removeIR)
+
+        }
+
+
 
     }
 

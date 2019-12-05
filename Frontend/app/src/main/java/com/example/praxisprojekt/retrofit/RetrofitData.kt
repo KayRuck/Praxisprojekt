@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class RetroUser (
 
+    @SerializedName("id") val id : Int? = null,
     @SerializedName("username") val username : String,
     @SerializedName("description") val description: String,
     @SerializedName("password") val password : String,
@@ -15,6 +16,7 @@ data class RetroUser (
 
 data class RetroCourse (
 
+    @SerializedName("id") val id : Int? = null,
     @SerializedName("title") val title : String,
     @SerializedName("description") val description : String,
     @SerializedName("state") val state : Boolean,

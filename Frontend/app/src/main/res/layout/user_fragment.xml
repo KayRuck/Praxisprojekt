@@ -10,12 +10,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <!-- Picture Source https://pixabay.com/photos/model-flowers-bouquet-of-flowers-1246028/ -->
+        <!-- Picture Source https://pixabay.com/vectors/blank-profile-picture-mystery-man-973460/ -->
         <ImageView
                 android:id="@+id/userImage"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:src="@drawable/pic_pixabay_free_photos_men"
+                android:src="@drawable/pic_pixabay_unknown"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

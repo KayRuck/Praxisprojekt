@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.praxisprojekt.MainActivity
 import com.example.praxisprojekt.R
 import com.example.praxisprojekt.adapter.CourseAdapter
 import com.example.praxisprojekt.retrofit.RetroCourse
@@ -25,12 +26,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class CourseFragment : Fragment() {
 
-    lateinit var serverCourseData: List<RetroCourse>
     private lateinit var viewModel: CourseViewModel
     private lateinit var rootView: View
     private lateinit var rec: RecyclerView
-//    private lateinit var retrofitClient: RetrofitClient
+    private lateinit var mainActivity: MainActivity
 
+    companion object {
+        val TAG = CourseFragment::class.java.canonicalName.toString()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +41,7 @@ class CourseFragment : Fragment() {
     ): View? {
         rootView = inflater.inflate(R.layout.course_fragment, container, false)
         rec = rootView.findViewById(R.id.recyclerView_display)
+        mainActivity = activity as MainActivity
 
         buildRecyclerView(rootView)
 
@@ -67,8 +71,9 @@ class CourseFragment : Fragment() {
             fragTransition2.replace(R.id.fragment_container, CourseEditFragment()).commit()
         }
 
-
         callCourses()
+
+
     }
 
     private fun callCourses() {
@@ -92,8 +97,8 @@ class CourseFragment : Fragment() {
 
                     Log.d("COURSE CALL COURSE", "response successful")
                     Log.d("COURSE CALL COURSE", "body: ${response.body().toString()}")
-                    serverCourseData = response.body()!!
-                    createAdapter()
+                    val serverCourseData = response.body()!!
+                    createAdapter(serverCourseData)
                 } else Log.d("COURSE CALL COURSE", " response not Successful: ${response.code()}")
             }
 
@@ -109,30 +114,17 @@ class CourseFragment : Fragment() {
     }
 
 
-    private fun createAdapter() {
+    private fun createAdapter(listData: List<RetroCourse>) {
+        Log.d(TAG, "Adapter created.")
 
-        val courseAdapter = CourseAdapter(serverCourseData)
+        val courseAdapter = CourseAdapter(listData) {
+            val detailData = listData[it]
+            Log.d(TAG, "Course $it clicked")
+            mainActivity.loadFragment(CourseDetailFragment(detailData))
+        }
         rec.adapter = courseAdapter
         rec.itemAnimator = DefaultItemAnimator()
     }
 
 
-//    private fun dummyCourseData(): List<Course> {
-//
-//        return listOf(
-//            Course(
-//                "Super Tolle Nachhilfe", " ", true, 0.0, 0.0,
-//                true, 0, InReturns.MENSA, Mods.APMOD
-//            ),
-//            Course(
-//                "Nachhilfe Cool und Schnell", " ", true, 0.0, 0.0,
-//                true, 0, InReturns.KAFFEE, Mods.MATH1INFMOD
-//            )
-//
-//        )
-//
-//    }
-
-
 }
-

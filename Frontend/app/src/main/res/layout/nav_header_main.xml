@@ -14,18 +14,20 @@
         android:gravity="bottom">
 
     <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/nav_header_vertical_spacing"
-            app:srcCompat="@mipmap/ic_launcher_round"
+            android:id="@+id/drawerUserProfil"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:clickable="true"
             android:contentDescription="@string/nav_header_desc"
-            android:id="@+id/imageView"/>
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            app:srcCompat="@drawable/pic_pixabay_unknown" />
 
     <TextView
+            android:id="@+id/drawerUserName"
             android:layout_width="188dp"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:text="@string/nav_header_title"
+            android:text="Benutzername"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 </LinearLayout>
