@@ -132,9 +132,9 @@ class Server(databaseService: DatabaseService) {
             }
 
             get("/users/{id}/modules") {
-                val id = call.parameters["uid"]?.toIntOrNull()
+                val id = call.parameters["id"]?.toIntOrNull()
                 checkIdRange(id) {
-                    call.respond(ok, gson.toJson(TempTableService.getUserModuleBy(it)))
+                    call.respond(ok, gson.toJson(TempTableService.getModuleByUser(it)))
                 }
 
 

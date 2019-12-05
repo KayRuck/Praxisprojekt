@@ -4,7 +4,6 @@ import data.Mod
 import data.UserToModule
 import database.DatabaseService.Companion.dbQuery
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 
@@ -16,10 +15,12 @@ object TempTableService {
                 AND m.id = utm.moduleID
         """
 
-    suspend fun getUserModuleBy(userID: Int): List<String> = dbQuery {
-        Modules.select {
-            (Users.id eq UserToModules.fk_UserID) and (Modules.id eq UserToModules.fk_ModuleID) and (Users.id eq userID)
-        }.mapNotNull { mapToString(it) }
+    suspend fun getModuleByUser(userID: Int): List<String> = dbQuery {
+        (Modules innerJoin UserToModules innerJoin Users)
+            .select {
+//                (Users.id eq UserToModules.fk_UserID) and (Modules.id eq UserToModules.fk_ModuleID) and
+                        (Users.id eq userID)
+            }.mapNotNull { mapToString(it) }
     }
 
     suspend fun getAllUserModulesBy(userID: Int) = UserToModules.select {
@@ -33,7 +34,7 @@ object TempTableService {
                 it[fk_ModuleID] = modID
             }
         }
-        return getUserModuleBy(userID)
+        return getModuleByUser(userID)
     }
 
     private fun mapModule(row: ResultRow): Mod = Mod(
