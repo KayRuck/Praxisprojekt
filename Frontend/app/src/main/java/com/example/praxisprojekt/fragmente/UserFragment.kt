@@ -44,6 +44,10 @@ class UserFragment : Fragment() {
 
         // TODO check if the id is valid > 0
 
+//        if (userID != -1 ) {} Fehler
+//        else if (userID == userIDFragmentProperty) Liefert Eigenen Nutzer
+//        else {} Liefert Anderen Nutzer
+
         getModulesFromUser(userID)
 
         callUserByID(userID, rootView)

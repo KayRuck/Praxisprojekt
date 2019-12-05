@@ -70,7 +70,7 @@ class UserEditFragment : Fragment() {
             update = true
             rootView.editUserTextView.text = "Bearbeite dein Profil"
             rootView.editUserButton.text = "Bearbeiten"
-            // TODO Load User Data + Add Update User Endpoint
+            // TODO Load Previous User Data into Form
         }
 
         rootView.editUserButton.setOnClickListener {
@@ -178,11 +178,30 @@ class UserEditFragment : Fragment() {
 
         call.enqueue(object : Callback<RetroUser> {
             override fun onResponse(call: Call<RetroUser>, response: Response<RetroUser>) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                if (!response.isSuccessful) {
+                    Log.d(
+                        "UPDATE USER - NOT SUCCESS",
+                        "Body: $retroUser Code: ${response.code()} / ${response.body()} / ${response.message()} /  ${response.errorBody()} / ${response.headers()}"
+                    )
+                }
+
+                val retroUserResponse: RetroUser? = response.body()
+                makeText(context, response.code().toString(), Toast.LENGTH_SHORT).show()
+                Log.d(
+                    "UPDATE USER SUCCESS",
+                    " - Response Body: " + retroUserResponse + " Code: " + response.code()
+                )
+
+                val name = response.body()!!.username
+                val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+                sharedPref.edit().putString(MainActivity.USER_NAME, name).apply()
             }
 
             override fun onFailure(call: Call<RetroUser>, t: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                Log.d(
+                    "UPDATE USER FAIL",
+                    " - Message: ${t.message} Cause: ${t.cause} / ${t.localizedMessage} / ${t.stackTrace} "
+                )
             }
         })
 
