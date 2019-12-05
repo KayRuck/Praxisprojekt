@@ -24,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class UserFragment : Fragment() {
 
+    private lateinit var rootView: View
     var modulListe = listOf<String>()
 
     companion object {
@@ -36,7 +37,7 @@ class UserFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView: View = inflater.inflate(R.layout.user_fragment, container, false)
+        rootView = inflater.inflate(R.layout.user_fragment, container, false)
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
@@ -44,8 +45,6 @@ class UserFragment : Fragment() {
         // TODO check if the id is valid > 0
 
         getModulesFromUser(userID)
-
-        rootView.userModuleList.text = modulListe.toString()
 
         callUserByID(userID, rootView)
         val contactBtn = rootView.userContactButton
@@ -82,13 +81,16 @@ class UserFragment : Fragment() {
                         "GET MODULES - NOT SUCCESS",
                         "Body: ${response.body()} Code: ${response.code()} / ${response.message()} /  ${response.errorBody()}"
                     )
+                    return
                 }
 
                 Log.d(
                     "GET MODULES - SUCCESS",
                     "Body: ${response.body()} Code: ${response.code()} /  ${response.message()} /  ${response.errorBody()}"
                 )
+
                 modulListe = response.body()!!.toList()
+                rootView.userModuleList.text = modulListe.toString()
 
             }
 
@@ -130,11 +132,6 @@ class UserFragment : Fragment() {
                 if (desc == " " || desc == "") rootView.userDescription.text =
                     "Keine Beschreibung vorhanden"
                 else rootView.userDescription.text = response.body()!!.description
-//                rootView.userModuleList.text = listOf(
-//                    Mods.APMOD.title,
-//                    Mods.MATH1INFMOD.title,
-//                    Mods.MATH2INFMOD.title
-//                ).toString()
 
             }
         })

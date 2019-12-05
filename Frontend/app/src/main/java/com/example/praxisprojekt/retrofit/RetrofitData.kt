@@ -11,7 +11,9 @@ data class RetroUser (
     @SerializedName("email") val email : String,
     @SerializedName("contact") val contact : String,
     @SerializedName("loc_lat") val loc_lat : Double,
-    @SerializedName("loc_lang") val loc_lang : Double
+    @SerializedName("loc_lang") val loc_lang : Double,
+    @SerializedName("modules") val modules : List<Int>
+
 )
 
 data class RetroCourse (

@@ -7,6 +7,59 @@
         android:layout_height="match_parent"
         tools:context=".fragmente.CourseEditFragment" >
 
+    <CheckBox
+            android:id="@+id/checkboxAP"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="AP"
+            app:buttonTint="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toStartOf="@+id/checkboxMath1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editUserMods" />
+
+    <CheckBox
+            android:id="@+id/checkboxMath1"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="Mathe 1"
+            app:buttonTint="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editUserMods" />
+
+    <CheckBox
+            android:id="@+id/checkboxBWL"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="BWL 1"
+            app:buttonTint="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkboxMath1" />
+
+    <CheckBox
+            android:id="@+id/checkboxMath2"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="Mathe 2"
+            app:buttonTint="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toStartOf="@+id/checkboxBWL"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkboxAP" />
+
+    <TextView
+            android:id="@+id/editUserMods"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Wähle deine Module"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.181"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editUserTV" />
+
     <Button
             android:id="@+id/editUserButton"
             android:layout_width="350dp"
@@ -18,7 +71,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkboxMath2" />
 
     <TextView
             android:id="@+id/editUserTextView"
@@ -111,13 +165,15 @@
 
     <TextView
             android:id="@+id/editUserTV"
-            android:layout_width="320dp"
-            android:layout_height="101dp"
+            android:layout_width="325dp"
+            android:layout_height="37dp"
             android:layout_marginTop="12dp"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editUserDescrition" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

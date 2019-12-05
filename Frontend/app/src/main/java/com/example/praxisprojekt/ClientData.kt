@@ -14,7 +14,7 @@ data class User(
     val loc_lang: Double
 )
 
-enum class Mods (val int: Int, var title : String, var desc : String?) {
+enum class Mods (val id: Int, var title : String, var desc : String?) {
 
     APMOD(1, "Algorithmen und Programmierung", "Informatik"),
     MATH1INFMOD (2, "Mathematik 1", "Informatik - TI, ITM, MI, AI"),

@@ -32,7 +32,7 @@ class CourseDetailFragment (val retroCourse : RetroCourse) : Fragment() {
         val rootView = inflater.inflate(R.layout.course_detail_fragment, container, false)
 
         // TODO: Andere Text Views zu weisen
-        Log.d(TAG, "Fragmend loaded")
+        Log.d(TAG, "Fragment loaded")
         rootView.detailCourseTitleTV.text = retroCourse.title
 
         return rootView

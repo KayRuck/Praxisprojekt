@@ -14,12 +14,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceManager
 import com.example.praxisprojekt.Constants
 import com.example.praxisprojekt.MainActivity
+import com.example.praxisprojekt.Mods
 import com.example.praxisprojekt.R
 import com.example.praxisprojekt.retrofit.RetroService
 import com.example.praxisprojekt.retrofit.RetroUser
 import com.example.praxisprojekt.viewModels.UserEditViewModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.user_edit_fragment.*
 import kotlinx.android.synthetic.main.user_edit_fragment.view.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,6 +31,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.regex.Pattern
 
 class UserEditFragment : Fragment() {
+
+    private lateinit var rootView: View
+
 
     //TODO: Auslagern
     private val PASSWORD_PATTERN: Pattern = Pattern.compile(
@@ -72,11 +77,11 @@ class UserEditFragment : Fragment() {
             val editName = rootView.editUserName.text.toString()
             val editEmail = rootView.editUserEMail.text.toString()
 
-            validateEMail(editEmail)
+           // validateEMail(editEmail)
 
             val editPass = rootView.editUserPassword.text.toString()
 
-            validatePasswort(editPass)
+            //validatePasswort(editPass)
 
             val editDesc = rootView.editUserDescrition.text.toString()
             val editContact = rootView.editUserContact.text.toString()
@@ -88,7 +93,7 @@ class UserEditFragment : Fragment() {
             var passwordCheck2 = false
 
             val retroUser =
-                RetroUser(null, editName, editDesc, editPass, editEmail, editContact, 0.0, 0.0)
+                RetroUser(null, editName, editDesc, editPass, editEmail, editContact, 0.0, 0.0, getModulelist())
             Log.d("CREATE USER: ", retroUser.toString())
 
             rootView.editUserPassword.setOnEditorActionListener { v, actionId, event ->
@@ -231,6 +236,19 @@ class UserEditFragment : Fragment() {
             }
 
         })
+    }
+
+    private fun getModulelist() : List<Int>{
+
+        val modules = mutableListOf<Int>()
+        if (checkboxAP.isChecked) modules.add(Mods.APMOD.id)
+        if (checkboxMath1.isChecked) modules.add(Mods.MATH1INFMOD.id)
+        if (checkboxMath2.isChecked) modules.add(Mods.MATH2INFMOD.id)
+        if (checkboxBWL.isChecked) modules.add(Mods.BWL1INFMOD.id)
+
+
+
+        return modules
     }
 
 
