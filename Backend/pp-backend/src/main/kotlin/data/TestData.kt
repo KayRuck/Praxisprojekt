@@ -1,11 +1,7 @@
 package data
 
-import database.Courses
-import database.InReturns
-import database.Modules
-import database.Users
+import database.*
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class TestData {
@@ -116,6 +112,13 @@ class TestData {
                 it[fk_creator] = 1
                 it[fk_return] = 1
                 it[fk_modules] = 1
+            }
+        }
+
+        transaction {
+            UserToModules.insert {
+                it[fk_UserID] = 1
+                it[fk_ModuleID] = 1
             }
         }
     }

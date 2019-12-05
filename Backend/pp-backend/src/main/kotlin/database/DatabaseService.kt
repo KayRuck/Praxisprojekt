@@ -3,7 +3,8 @@ package database
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class DatabaseService {
@@ -22,8 +23,8 @@ class DatabaseService {
 
         transaction {
 
-            SchemaUtils.drop(Users, Modules, TeachLocs, InReturns, Courses, LocToCourses, UserToModules, UserToCourses)
-            SchemaUtils.create(Users, Modules, TeachLocs, InReturns, Courses, LocToCourses, UserToModules, UserToCourses)
+            SchemaUtils.drop(Users, Modules, TeachLocs, InReturns, Courses, LocToCourses, UserToModules)
+            SchemaUtils.create(Users, Modules, TeachLocs, InReturns, Courses, LocToCourses, UserToModules)
         }
     }
 

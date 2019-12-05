@@ -1,8 +1,9 @@
 package algorithm
 
+import data.Course
 import data.Mod
 import data.User
-import database.Users
+import database.CourseService
 
 class Matching {
 
@@ -18,12 +19,29 @@ class Matching {
      */
 
 
-    fun findMatch(objectiveUser : User, currentModule : Mod){
-        val userList = listOf<User>()
+    /**
+     * @param objectiveUser Aktueller Nutzer, welcher nach matches sucht
+     * @param currentModules Modulliste des aktuellen Nutzers
+     */
+    suspend fun findMatch(objectiveUser: User, currentModules: List<Mod>): MutableList<Course> {
+        // zu matchende Liste für den objectiveUser an Kursen
+        var courses = mutableListOf<Course>()
 
-//        userList.forEach{ it.moduleList.foreach{ it == currentModule then giveback User.id} }
-        // ID werden in einer zweiten Liste gespeichert und an den Server zurück gegeben
+        // init courses mit allen Kursen aus der DB
+        courses = CourseService.getAllCourses().toMutableList()
 
+        // lösche alle Kurse aus courses, welche nicht in currentModules vorhanden sind
+        val toDelete = mutableListOf<Course>()
+        courses.forEach { course ->
+            if (!currentModules.any {it.id == course.fk_modules })
+                toDelete.add(course)
+        }
+        courses.removeAll(toDelete)
+
+        return courses
     }
 
+
+    // TODO Filtering Matches - Show only requested Modules
 }
+

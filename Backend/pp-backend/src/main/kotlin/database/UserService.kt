@@ -38,6 +38,8 @@ object UserService {
         return getUserByID(key!!)!!
     }
 
+
+
     private fun toUser(row: ResultRow): User = User(
         id = row[Users.id],
         username = row[Users.username],
@@ -49,7 +51,6 @@ object UserService {
         loc_lang = row[Users.loc_lang]
 
     )
-
 
 
 }

@@ -17,7 +17,7 @@ data class User(
 data class Mod(
     val id: Int,
     val title: String,
-    val description: String
+    val description: String?
 )
 
 // Teaching Location - Ort der Nachhilfe
@@ -61,7 +61,7 @@ enum class InReturns (val int: Int, var title : String, var desc : String?){
 
 
 data class Course(
-    val id: Int,
+    val id: Int?,
     val title: String,
     val description: String,
     val state: Boolean,
@@ -81,12 +81,16 @@ data class LocToCourse(
 )
 
 data class UserToModule(
-    val fk_UserID: User,
+    val fk_UserID: Int, //User,
     val fk_modID: Int // Mods
 )
 
-data class UserToCourse(
-    val fk_UserID: User,
-    val fk_courseID: Course
+data class ModuleList(
+    val modules: List<Int>
 )
+
+//data class UserToCourse(
+//    val fk_UserID: User,
+//    val fk_courseID: Course
+//)
 

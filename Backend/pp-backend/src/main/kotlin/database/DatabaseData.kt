@@ -64,17 +64,17 @@ object Courses : Table("Courses") {
 
 /*Zwischen Tabellen*/
 object LocToCourses : Table("LocToCourses"){
-    val fk_teachLocID = reference("teachLocID", TeachLocs.id).primaryKey(0)
-    val fk_courseID = reference("courseID", Courses.id).primaryKey(1)
+    val fk_TeachLocID = reference("teachLocID", TeachLocs.id).primaryKey(0)
+    val fk_CourseID = reference("courseID", Courses.id).primaryKey(1)
 }
 
 object UserToModules : Table("UserToModules"){
     val fk_UserID = reference("userID", Users.id).primaryKey(0)
-    val fk_moduleID = reference("moduleID", Modules.id).primaryKey(1)
+    val fk_ModuleID = reference("moduleID", Modules.id).primaryKey(1)
 }
 
-object UserToCourses : Table("UserToCourses"){
-    val fk_UserID = reference("userID", Users.id).primaryKey(0)
-    val fk_courseID = reference("courseID", Courses.id).primaryKey(1)
-}
+//object UserToCourses : Table("UserToCourses"){
+//    val fk_UserID = reference("userID", Users.id).primaryKey(0)
+//    val fk_CourseID = reference("courseID", Courses.id).primaryKey(1)
+//}
 

@@ -1,8 +1,13 @@
 import com.google.gson.Gson
+import data.Course
+import data.ModuleList
 import data.User
+import data.UserToModule
 import database.CourseService
 import database.DatabaseService
+import database.TempTableService
 import database.UserService
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.features.origin
 import io.ktor.http.HttpStatusCode
@@ -16,6 +21,7 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
+import io.ktor.util.pipeline.PipelineContext
 
 
 class Server(databaseService: DatabaseService) {
@@ -38,6 +44,7 @@ class Server(databaseService: DatabaseService) {
                 println("-- Send $json")
                 call.respond(json)
             }
+
             get("/courses") {
                 println("GET /courses from ${call.request.origin.remoteHost}")
                 val json = gson.toJson(CourseService.getAllCourses())
@@ -63,39 +70,56 @@ class Server(databaseService: DatabaseService) {
             get("/users/{id}") {
                 val id = call.parameters["id"]?.toIntOrNull()
 
-                if (id != null && id in 1..100000)
-                    call.respond(ok, gson.toJson(UserService.getUserByID(id)))
-                else
-                    call.respond(notFound, "ID - Out of Range")
+                checkIdRange(id) {
+                    call.respond(ok, gson.toJson(UserService.getUserByID(it)))
+                }
 
             }
-
+/*
             get("/courses/{id}") {
                 val id = call.parameters["id"]?.toIntOrNull()
 
-                if (id != null && id in 1..100000)
-                    call.respond(ok, gson.toJson(CourseService.getCourseByID(id)))
-                else
-                    call.respond(notFound, "ID - Out of Range")
-
+                checkIdRange(id) {
+                    call.respond(ok, gson.toJson(CourseService.getCourseByID(it)))
+                }
             }
-
+*/
             post("/user/register") {
 
-                val responseUser = call.receive<User>()
+                val response = call.receive<String>()
+                println("/user/register - \n $response \n")
+                val responseUser = Gson().fromJson<User>(response, User::class.java)
+                val moduleList = Gson().fromJson<ModuleList>(response, ModuleList::class.java)
                 val newUser = UserService.addUser(responseUser)
 
-                call.respond("Erhalten: $responseUser Nuutzer: $newUser ID: ${newUser.id}")
+
+                val userToModulesList = mutableListOf<UserToModule>()
+                moduleList.modules.forEach { userToModulesList.add(UserToModule(newUser.id, it)) }
+                userToModulesList.forEach { TempTableService.addModulesToUser(it) }
+
+
+
+//                call.respond("Erhalten: $responseUser Nutzer: $newUser ID: ${newUser.id}")
+                call.respond(Gson().toJson(newUser))
             }
 
-            // TODO: Get all Courses form a User
+            post("/course/register") {
+
+                val response = call.receive<String>()
+                println("/course/register - \n $response \n")
+                val responseCourse = Gson().fromJson<Course>(response, Course::class.java)
+                val newCourse = CourseService.addCourse(responseCourse)
+
+//                call.respond("Erhalten: $responseUser Nutzer: $newUser ID: ${newUser.id}")
+                call.respond(Gson().toJson(newCourse))
+            }
+
             get("/users/{id}/courses") {
                 val id = call.parameters["id"]?.toIntOrNull()
 
-                if (id != null && id in 1..100000)
-                    call.respond(ok, gson.toJson(CourseService.getCourseByID(id)))
-                else
-                    call.respond(notFound, "ID - Out of Range")
+                checkIdRange(id) {
+                    call.respond(ok, gson.toJson(CourseService.getCourseByID(it)))
+                }
 
             }
 
@@ -107,6 +131,14 @@ class Server(databaseService: DatabaseService) {
 
             }
 
+            get("/users/{id}/modules") {
+                val id = call.parameters["uid"]?.toIntOrNull()
+                checkIdRange(id) {
+                    call.respond(ok, gson.toJson(TempTableService.getUserModuleBy(it)))
+                }
+
+
+            }
 
             get("/matching/{id}&{module}") {
                 val id = call.parameters["id"]?.toIntOrNull()
@@ -148,6 +180,16 @@ class Server(databaseService: DatabaseService) {
 
 
         }
+    }
+
+    private suspend fun PipelineContext<Unit, ApplicationCall>.checkIdRange(
+        id: Int?, f: suspend (Int) -> Unit
+    ) {
+
+        if (id != null && id in 1..100000)
+            f(id)
+        else
+            call.respond(notFound, "ID - Out of Range")
     }
 
     fun start() = server.start(false)
