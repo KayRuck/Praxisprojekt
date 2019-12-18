@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (savedInstanceState != null) return
         else {
-             val firstFrag = CourseFragment()
+             val firstFrag = CourseFragment(1)
             firstFrag.arguments = intent.extras
             supportFragmentManager.beginTransaction().add(R.id.fragment_container, firstFrag)
                 .commit()
@@ -95,14 +95,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_home -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, CourseFragment()).commit()
+                    .replace(R.id.fragment_container, CourseFragment(2)).commit()
             }
             R.id.nav_note -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, UserEditFragment()).commit()
             }
             R.id.nav_course -> {
-
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, CourseFragment(3)).commit()
             }
             R.id.nav_sett -> {
                 supportFragmentManager.beginTransaction()

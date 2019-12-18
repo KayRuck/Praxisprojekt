@@ -5,18 +5,20 @@ import retrofit2.http.*
 
 interface RetroService {
 
-    /*@GET("users")
-    fun getAllUser(): Call<RetroUser>
-    */
-
     @GET("/users/{id}")
     fun getUserById(@Query("id") id: Int): Call<RetroUser>
+
+    @GET("/courses/{id}")
+    fun getCourseById(@Query("id") id: Int): Call<RetroCourse>
 
     @GET("/courses")
     fun getAllCourses(): Call<List<RetroCourse>>
 
     @GET("/users/{id}/modules")
     fun getModulesFromUser(@Query("id") id : Int) : Call<List<String>>
+
+    @GET("/course/{id}/location")
+    fun getLocationFromCourse(@Query("id") id : Int) : Call<List<String>>
 
     @POST("/user/register")
     fun createUser(@Body retroUser: RetroUser): Call<RetroUser>
@@ -27,13 +29,14 @@ interface RetroService {
     @PUT("/user/{id}")
     fun updateUser(@Query("id") id : Int, @Body retroUser: RetroUser) : Call<RetroUser>
 
+    @PUT("/course/{id}")
+    fun updateCourse(@Query("id") id : Int, @Body retroCourse: RetroCourse) : Call<RetroCourse>
+
+    @GET("/matching/{id}")
+    fun getAllMatchedCourses(@Query("id") id: Int): Call<List<RetroCourse>>
+
+    @GET("/users/{id}/courses")
+    fun getAllUserCourses(@Query("id") id: Int): Call<List<RetroCourse>>
+
 }
 
-/**
- * Beispiel
- * interface WeatherService {
- * @GET("data/2.5/weather?")
- * fun getCurrentWeatherData(@Query("lat") lat: String, @Query("lon") lon: String, @Query("APPID") app_id: String): Call<WeatherResponse>
-}
- *
- */

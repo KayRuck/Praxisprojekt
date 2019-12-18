@@ -34,30 +34,21 @@ class UserEditFragment : Fragment() {
 
     private lateinit var rootView: View
 
-
     //TODO: Auslagern
     private val PASSWORD_PATTERN: Pattern = Pattern.compile(
         "^" +
                 "(?=.*[0-9])" +         //at least 1 digit
                 "(?=.*[a-z])" +         //at least 1 lower case letter
                 "(?=.*[A-Z])" +         //at least 1 upper case letter
-                // "(?=.*[a-zA-Z])" +      //any letter
                 "(?=.*[@#$%^&+=])" +    //at least 1 special character
                 "(?=\\S+$)" +           //no white spaces
                 ".{4,}" +               //at least 4 characters
                 "$"
     )
 
-    companion object {
-        fun newInstance() = UserEditFragment()
-    }
-
-    // TODO: Module Preferences List / in xml Checkbois
-
     private lateinit var viewModel: UserEditViewModel
     private var update = false
 
-    @SuppressLint("ResourceAsColor")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -70,30 +61,35 @@ class UserEditFragment : Fragment() {
             update = true
             rootView.editUserTextView.text = "Bearbeite dein Profil"
             rootView.editUserButton.text = "Bearbeiten"
-            // TODO Load Previous User Data into Form
+            callUserDataByID(userID, rootView)
+            getModuleDataFromUser(userID)
+
         }
 
         rootView.editUserButton.setOnClickListener {
             val editName = rootView.editUserName.text.toString()
             val editEmail = rootView.editUserEMail.text.toString()
-
-           // validateEMail(editEmail)
-
             val editPass = rootView.editUserPassword.text.toString()
-
-            //validatePasswort(editPass)
-
             val editDesc = rootView.editUserDescrition.text.toString()
             val editContact = rootView.editUserContact.text.toString()
+
+
             rootView.editUserTV.text = ("Name: $editName E-Mail: $editEmail " +
                     "Beschreibung: $editDesc Kontakt: $editContact " +
                     "Password: $editPass ")
 
-            var passwordCheck1 = false
-            var passwordCheck2 = false
-
             val retroUser =
-                RetroUser(null, editName, editDesc, editPass, editEmail, editContact, 0.0, 0.0, getModulelist())
+                RetroUser(
+                    null,
+                    editName,
+                    editDesc,
+                    editPass,
+                    editEmail,
+                    editContact,
+                    0.0,
+                    0.0,
+                    getModulelist()
+                )
             Log.d("CREATE USER: ", retroUser.toString())
 
             rootView.editUserPassword.setOnEditorActionListener { v, actionId, event ->
@@ -140,7 +136,10 @@ class UserEditFragment : Fragment() {
                 false
             }
             !PASSWORD_PATTERN.matcher(password).matches() -> {
-                Log.d("E-MAIL INVALID", "Change Password - A Upper or Lower Case, Special character or Number is Missing")
+                Log.d(
+                    "E-MAIL INVALID",
+                    "Change Password - A Upper or Lower Case, Special character or Number is Missing"
+                )
                 false
             }
             else -> {
@@ -164,8 +163,7 @@ class UserEditFragment : Fragment() {
         return true
     }
 
-    // TODO: DO IT
-    private fun updateUser(userID : Int, retroUser: RetroUser) {
+    private fun updateUser(userID: Int, retroUser: RetroUser) {
         val gson: Gson = GsonBuilder().setLenient().create()
 
         val retroClient = Retrofit.Builder()
@@ -174,7 +172,7 @@ class UserEditFragment : Fragment() {
             .build()
 
         val retroService = retroClient.create(RetroService::class.java)
-        val call : Call<RetroUser> = retroService.updateUser(userID, retroUser)
+        val call: Call<RetroUser> = retroService.updateUser(userID, retroUser)
 
         call.enqueue(object : Callback<RetroUser> {
             override fun onResponse(call: Call<RetroUser>, response: Response<RetroUser>) {
@@ -257,24 +255,106 @@ class UserEditFragment : Fragment() {
         })
     }
 
-    private fun getModulelist() : List<Int>{
-
+    private fun getModulelist(): List<Int> {
         val modules = mutableListOf<Int>()
         if (checkboxAP.isChecked) modules.add(Mods.APMOD.id)
         if (checkboxMath1.isChecked) modules.add(Mods.MATH1INFMOD.id)
         if (checkboxMath2.isChecked) modules.add(Mods.MATH2INFMOD.id)
         if (checkboxBWL.isChecked) modules.add(Mods.BWL1INFMOD.id)
-
-
-
         return modules
     }
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(UserEditViewModel::class.java)
         // TODO: Use the ViewModel
+    }
+
+    private fun callUserDataByID(id: Int, rootView: View) {
+
+
+        val gson: Gson = GsonBuilder().setLenient().create()
+
+        val retroClient = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL.string)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+        val retroService = retroClient.create(RetroService::class.java)
+        val call = retroService.getUserById(id)
+
+
+        Log.d("COURSE CALL User", "BEGINN")
+
+        call.enqueue(object : Callback<RetroUser> {
+            override fun onFailure(call: Call<RetroUser>, t: Throwable) {
+                Log.d("COURSE CALL User", "FAIL Message ${t.message} / ${t.cause} ")
+
+            }
+
+            override fun onResponse(call: Call<RetroUser>, response: Response<RetroUser>) {
+                val body = response.body()!!
+
+                rootView.editUserName.setText(body.username)
+                rootView.editUserEMail.setText(body.email)
+                rootView.editUserContact.setText(body.contact)
+                rootView.editUserPassword.setText(body.password)
+                rootView.editUserPassword2.setText(body.password)
+
+                if (body.description.isBlank())
+                    rootView.editUserDescrition.setText("Keine Beschreibung vorhanden")
+                else rootView.editUserDescrition.setText(body.description)
+            }
+        })
+    }
+
+    private fun getModuleDataFromUser(id: Int) {
+
+        val gson: Gson = GsonBuilder().setLenient().create()
+
+        val retroClient = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL.string)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+        val retroService = retroClient.create(RetroService::class.java)
+        val call = retroService.getModulesFromUser(id)
+
+        call.enqueue(object : Callback<List<String>> {
+            override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
+                if (!response.isSuccessful) {
+                    Log.d(
+                        "GET MODULES - NOT SUCCESS",
+                        "Body: ${response.body()} Code: ${response.code()} / ${response.message()} /  ${response.errorBody()}"
+                    )
+                    return
+                }
+
+                Log.d(
+                    "GET MODULES - SUCCESS",
+                    "Body: ${response.body()} Code: ${response.code()} /  ${response.message()} /  ${response.errorBody()}"
+                )
+
+                val modulListe = response.body()!!.toList()
+                modulListe.forEach{
+                    when(it) {
+                        Mods.APMOD.title -> checkboxAP.isChecked = true
+                        Mods.MATH1INFMOD.title -> checkboxMath1.isChecked = true
+                        Mods.MATH2INFMOD.title -> checkboxMath2.isChecked = true
+                        Mods.BWL1INFMOD.title -> checkboxBWL.isChecked = true
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                Log.d(
+                    "GET MODULES - Fail",
+                    "Message: ${t.message} / CAUSE: ${t.cause}"
+                )
+
+            }
+        })
     }
 
 }

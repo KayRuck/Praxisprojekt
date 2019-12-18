@@ -139,12 +139,13 @@
             android:layout_width="250dp"
             android:layout_height="30dp"
             android:layout_marginTop="16dp"
+            android:clickable="false"
             android:max="90"
+            android:theme="@style/CustomSeekbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.472"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inReturnSpinner"
-            android:theme="@style/CustomSeekbar"/>
+            app:layout_constraintTop_toBottomOf="@+id/inReturnSpinner" />
 
     <CheckBox
             android:id="@+id/checkboxTHKoeln"

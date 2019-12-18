@@ -25,7 +25,10 @@ data class RetroCourse (
     @SerializedName("cLocLat") val cLocLat : Double,
     @SerializedName("cLocLang") val cLocLang : Double,
     @SerializedName("privateUsage") val privateUsage : Boolean,
+    @SerializedName("inReturnValue") val inReturnValue : Int,
     @SerializedName("fk_creator") val fk_creator : Int,
     @SerializedName("fk_return") val fk_return : Int,
-    @SerializedName("fk_modules") val fk_modules : Int
+    @SerializedName("fk_modules") val fk_modules : Int,
+    @SerializedName("locations") val locations : List<Int>
+
 )

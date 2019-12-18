@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,12 +25,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class CourseFragment : Fragment() {
+class CourseFragment(var course: Int) : Fragment() {
 
     private lateinit var viewModel: CourseViewModel
     private lateinit var rootView: View
     private lateinit var rec: RecyclerView
     private lateinit var mainActivity: MainActivity
+    private  var ownCourse : Boolean = false
 
     companion object {
         val TAG = CourseFragment::class.java.canonicalName.toString()
@@ -56,13 +58,22 @@ class CourseFragment : Fragment() {
 
     private fun buildRecyclerView(view: View) {
 
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+        val userID = sharedPref.getInt(MainActivity.USER_ID, 1)
+
         val lin = LinearLayoutManager(context)
         rec.layoutManager = lin
+
+        when (course) {
+            1 -> { callAllCourses() ; ownCourse = false }
+            2 -> { callMatchedCourses(userID) ; ownCourse = false }
+            3 -> { callUserCourses(userID) ; ownCourse = true }
+        }
 
         val reloadBtn: FloatingActionButton = view.findViewById(R.id.displayButton_l2)
         reloadBtn.setOnClickListener {
             val fragTransaction1 = fragmentManager!!.beginTransaction()
-            fragTransaction1.replace(R.id.fragment_container, CourseFragment()).commit()
+            fragTransaction1.replace(R.id.fragment_container, CourseFragment(course)).commit()
         }
 
         val editBtn: FloatingActionButton = view.findViewById(R.id.displayButton_l)
@@ -71,12 +82,43 @@ class CourseFragment : Fragment() {
             fragTransition2.replace(R.id.fragment_container, CourseEditFragment()).commit()
         }
 
-        callCourses()
+    }
 
+    private fun callUserCourses(userID: Int) {
+        val retroClient = Retrofit.Builder()
+            .baseUrl("http://192.168.0.185:5555/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val retroService = retroClient.create(RetroService::class.java)
+        val call = retroService.getAllUserCourses(userID)
+
+        call.enqueue(object : Callback<List<RetroCourse>> {
+            override fun onResponse(
+                call: Call<List<RetroCourse>>,
+                response: Response<List<RetroCourse>>
+            ) {
+                if (response.isSuccessful) {
+
+                    Log.d("COURSE USER COURSE", "response successful")
+                    Log.d("COURSE USER COURSE", "body: ${response.body().toString()}")
+                    val serverCourseData = response.body()!!
+                    createAdapter(serverCourseData)
+                } else Log.d("COURSE USER COURSE", " response not Successful: ${response.code()}")
+            }
+
+            override fun onFailure(call: Call<List<RetroCourse>>, t: Throwable) {
+                Log.d(
+                    "COURSE CALL COURSE",
+                    "response failed - Cause: " + t.cause + " Message: " + t.message + " Locallized Message " + t.localizedMessage +
+                            " StackTrace: " + t.stackTrace + " Suppressed: " + t.suppressed
+                )
+            }
+        })
 
     }
 
-    private fun callCourses() {
+    private fun callAllCourses() {
 
         val retroClient = Retrofit.Builder()
             .baseUrl("http://192.168.0.185:5555/")
@@ -113,6 +155,40 @@ class CourseFragment : Fragment() {
 
     }
 
+    private fun callMatchedCourses(userID: Int) {
+
+
+        val retroClient = Retrofit.Builder()
+            .baseUrl("http://192.168.0.185:5555/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val retroService = retroClient.create(RetroService::class.java)
+        val call = retroService.getAllMatchedCourses(userID)
+
+        call.enqueue(object : Callback<List<RetroCourse>> {
+            override fun onResponse(
+                call: Call<List<RetroCourse>>,
+                response: Response<List<RetroCourse>>
+            ) {
+                if (response.isSuccessful) {
+
+                    Log.d("COURSE MATCH COURSE", "response successful")
+                    Log.d("COURSE MATCH COURSE", "body: ${response.body().toString()}")
+                    val serverCourseData = response.body()!!
+                    createAdapter(serverCourseData)
+                } else Log.d("COURSE MATCH COURSE", " response not Successful: ${response.code()}")
+            }
+
+            override fun onFailure(call: Call<List<RetroCourse>>, t: Throwable) {
+                Log.d(
+                    "COURSE MATCH COURSE",
+                    "response failed - Cause: ${t.cause}  Message: ${t.message} Locallized Message ${t.localizedMessage}"
+                )
+            }
+        })
+
+    }
 
     private fun createAdapter(listData: List<RetroCourse>) {
         Log.d(TAG, "Adapter created.")
@@ -120,11 +196,10 @@ class CourseFragment : Fragment() {
         val courseAdapter = CourseAdapter(listData) {
             val detailData = listData[it]
             Log.d(TAG, "Course $it clicked")
-            mainActivity.loadFragment(CourseDetailFragment(detailData))
+            mainActivity.loadFragment(CourseDetailFragment(detailData, ownCourse))
         }
         rec.adapter = courseAdapter
         rec.itemAnimator = DefaultItemAnimator()
     }
-
 
 }

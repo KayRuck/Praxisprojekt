@@ -28,15 +28,23 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class CourseEditFragment : Fragment() {
+class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
 
     private lateinit var rootView: View
     private var currentReturn: Int = -1
     private var currentModule: Int = -1
+    private var update = false
 
     private val inReturnList = mutableListOf(
         " ",
         InReturns.MONEY.title,
+        InReturns.HELP.title,
+        InReturns.MENSA.title,
+        InReturns.COFFEE.title
+    )
+
+    private val inReturnListTH = mutableListOf(
+        " ",
         InReturns.HELP.title,
         InReturns.MENSA.title,
         InReturns.COFFEE.title
@@ -51,10 +59,6 @@ class CourseEditFragment : Fragment() {
         Mods.BWL1INFMOD.title
     )
 
-    companion object {
-        fun newInstance() = CourseEditFragment()
-    }
-
     private lateinit var viewModel: CourseEditViewModel
 
     override fun onCreateView(
@@ -63,18 +67,23 @@ class CourseEditFragment : Fragment() {
     ): View? {
         rootView = inflater.inflate(R.layout.course_edit_fragment, container, false)
 
+        if (course?.id != null) {
+            update = true
+            rootView.editCourseButton.text = "Bearbeiten"
+            callCourseDataByID(course.id)
+            getLocationDataFormCourse(course.id)
+        }
+
         setSeekBar()
-        fillSpinners()
+        initMSpinner()
+        initIRSpinner(inReturnList)
 
         val nSwitch = rootView.privateUsageSwitch
         nSwitch.setOnCheckedChangeListener { _, isChecked ->
 
             val message: String =
-                if (isChecked)
-                    "Checked $isChecked - Ausgewählt: Gewerblich"
-                else
-                    "Checked $isChecked - Ausgewählt: Privat"
-
+                if (isChecked) "Checked $isChecked - Ausgewählt: Gewerblich"
+                else "Checked $isChecked - Ausgewählt: Privat"
 
             makeText(context, message, Toast.LENGTH_SHORT).show()
         }
@@ -82,13 +91,35 @@ class CourseEditFragment : Fragment() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
 
+        rootView.checkboxTHKoeln.setOnCheckedChangeListener { _, isChecked ->
+            val selectedItem = rootView.inReturnSpinner.selectedItem as String
 
+            if (isChecked) {
+                // gewerblich deaktivieren
+                rootView.privateUsageSwitch.isChecked = false
+                rootView.privateUsageSwitch.isEnabled = false
+
+                rootView.editCourseSeekbar.isEnabled = false
+
+                initIRSpinner(inReturnListTH)
+
+            } else {
+                // gewerbliche Nutzung aktivieren
+                rootView.privateUsageSwitch.isClickable = true
+                rootView.privateUsageSwitch.isEnabled = true
+
+                rootView.editCourseSeekbar.isEnabled = true
+
+                initIRSpinner(inReturnList)
+            }
+        }
 
         rootView.editCourseButton.setOnClickListener {
             val editTitle = rootView.editCourseTitle.text.toString()
             val editDescr = rootView.editCourseDescrition.text.toString()
             val editState = true
             val editPrivateUsage = rootView.privateUsageSwitch.isChecked
+            val value = setSeekBar()
 
             val retroCourse = RetroCourse(
                 null,
@@ -98,16 +129,86 @@ class CourseEditFragment : Fragment() {
                 0.0,
                 0.0,
                 editPrivateUsage,
+                value,
                 userID,
                 currentReturn,
-                currentModule
+                currentModule,
+                //locationList
+                getLocationList()
             )
-            createCourse(retroCourse)
+
+            if (update && course?.id != null) updateCourse(course.id, retroCourse)
+            else createCourse(retroCourse)
 
             Log.d("CREATE COURSE", retroCourse.toString())
+
+
         }
 
         return rootView
+    }
+
+    private fun getLocationDataFormCourse(courseID: Int) {
+
+        val gson: Gson = GsonBuilder().setLenient().create()
+
+        val retroClient = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL.string)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+        val retroService = retroClient.create(RetroService::class.java)
+        val call = retroService.getLocationFromCourse(courseID)
+
+        call.enqueue(object : Callback<List<String>> {
+
+            override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
+                if (!response.isSuccessful) {
+                    Log.d(
+                        "GET LOCATION - NOT SUCCESS",
+                        "Body: ${response.body()} Code: ${response.code()} / ${response.message()} /  ${response.errorBody()}"
+                    )
+                    return
+                }
+                val locListe = response.body()
+
+                if (locListe != null) {
+                    Log.d(
+                        "GET LOCATION - SUCCESS",
+                        "Body: ${response.body()} Code: ${response.code()} /  ${response.message()} /  ${response.errorBody()}"
+                    )
+
+                    locListe.forEach {
+                        when (it) {
+                            TeachLocs.TEACH.title -> checkboxTeacher.isChecked = true
+                            TeachLocs.STUD.title -> checkboxStudent.isChecked = true
+                            TeachLocs.TH.title -> checkboxTHKoeln.isChecked = true
+                            TeachLocs.ONLINE.title -> checkboxOnline.isChecked = true
+                        }
+                    }
+                } else
+                    Log.d(
+                        "GET LOCATION - SUCCESS",
+                        "Body: ${response.body()}"
+                    )
+            }
+
+            override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                Log.d(
+                    "GET MODULES - Fail",
+                    "Message: ${t.message} / CAUSE: ${t.cause}"
+                )
+            }
+        })
+    }
+
+    private fun getLocationList(): List<Int> {
+        val locations = mutableListOf<Int>()
+        if (checkboxTeacher.isChecked) locations.add(TeachLocs.TEACH.id)
+        if (checkboxStudent.isChecked) locations.add(TeachLocs.STUD.id)
+        if (checkboxTHKoeln.isChecked) locations.add(TeachLocs.TH.id)
+        if (checkboxOnline.isChecked) locations.add(TeachLocs.ONLINE.id)
+        return locations
     }
 
     private fun createCourse(retroCourse: RetroCourse) {
@@ -123,82 +224,66 @@ class CourseEditFragment : Fragment() {
         val call: Call<RetroCourse> = retroService.createCourse(retroCourse)
 
         call.enqueue(object : Callback<RetroCourse> {
-            override fun onFailure(call: Call<RetroCourse>, t: Throwable) {
-                Log.d(
-                    "CREATE USER FAIL",
-                    " - Message: ${t.message} Cause: ${t.cause} / ${t.localizedMessage} / ${t.stackTrace} "
-                )
-
-            }
-
             override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>) {
 
                 if (!response.isSuccessful) {
                     Log.d(
-                        "CREATE USER - NOT SUCCESS",
-                        "Body: $retroCourse Code: ${response.code()} / ${response.body()} / ${response.message()} /  ${response.errorBody()} / ${response.headers()}"
+                        "CREATE COURSE - NOT SUCCESS",
+                        "Course Body: $retroCourse Code: ${response.code()} / Response Body: ${response.body()} "
                     )
                 }
 
                 val retroCourseResponse: RetroCourse? = response.body()
                 makeText(context, response.code().toString(), Toast.LENGTH_SHORT).show()
                 Log.d(
-                    "CREATE USER SUCCESS",
-                    " - Response Body: " + retroCourseResponse + " Code: " + response.code()
-                )
-
-
-                Log.d(
-                    "CREATE USER SUCCESS",
-                    " - Response Body: " + retroCourseResponse + " Code: " + response.code()
+                    "CREATE COURSE SUCCESS",
+                    " - Response Body: $retroCourseResponse Code: " + response.code()
                 )
 
             }
 
-        })
+            override fun onFailure(call: Call<RetroCourse>, t: Throwable) {
+                Log.d(
+                    "CREATE COURSE FAIL",
+                    " - Message: ${t.message} Cause: ${t.cause} / ${t.localizedMessage} / ${t.stackTrace} "
+                )
 
+            }
+        })
     }
 
-
-
-    /**
-     *  TODO: Comment Code
-     *  Used Tutorial: https://www.geeksforgeeks.org/spinner-in-kotlin/
-     *
-     *
-     */
-
-    private fun fillSpinners() {
+    private fun initIRSpinner(modListe: MutableList<String>) {
         val spinnerIR = rootView.inReturnSpinner
-        val spinnerM = rootView.moduleSpinner
 
-        if (spinnerIR != null) {
-            val adapter = ArrayAdapter(
-                context!!,
-                android.R.layout.simple_spinner_item,
-                inReturnList
-            )
-            spinnerIR.adapter = adapter
+        val adapter = ArrayAdapter(
+            context!!,
+            android.R.layout.simple_spinner_item,
+            modListe
+        )
+        spinnerIR.adapter = adapter
 
-            spinnerIR.onItemSelectedListener = object :
-                AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
-                ) {
-                    currentReturn = position
-                    makeText(
-                        context, "Ausgewählt: " + inReturnList[position], Toast.LENGTH_SHORT
-                    ).show()
-                }
+        spinnerIR.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View, position: Int, id: Long
+            ) {
+                currentReturn = position
+                makeText(
+                    context, "Ausgewählt: " + inReturnList[position], Toast.LENGTH_SHORT
+                ).show()
+            }
 
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    makeText(
-                        context, "Bitte eine Gegenleistung auswählen", Toast.LENGTH_SHORT
-                    ).show()
-                }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                makeText(
+                    context, "Bitte eine Gegenleistung auswählen", Toast.LENGTH_SHORT
+                ).show()
             }
         }
+    }
+
+    private fun initMSpinner() {
+        val spinnerM = rootView.moduleSpinner
 
         if (spinnerM != null) {
             val adapter = ArrayAdapter(
@@ -230,18 +315,11 @@ class CourseEditFragment : Fragment() {
         }
 
 
-
     }
 
-    /**
-     *  TODO: Comment Code
-     *  Used Tutorial: https://www.geeksforgeeks.org/seekbar-in-kotlin/
-     *
-     *
-     */
-
-    private fun setSeekBar() {
+    private fun setSeekBar(): Int {
         val seek = rootView.editCourseSeekbar
+        var translatedProgress: Int = 0
 
         seek?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(
@@ -249,12 +327,13 @@ class CourseEditFragment : Fragment() {
                 progress: Int,
                 fromUser: Boolean
             ) {
-                val translatedProgress = progress + 10
+                translatedProgress = progress + 10
                 makeText(
                     context,
                     "On Progress Changed - seekbar progress $translatedProgress",
                     Toast.LENGTH_SHORT
                 ).show()
+
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -265,31 +344,92 @@ class CourseEditFragment : Fragment() {
                 makeText(context, "seekbar touch stopped", Toast.LENGTH_SHORT).show()
             }
 
+        })
+        return translatedProgress
+    }
 
+    private fun updateCourse(courseID: Int, retroCourse: RetroCourse) {
+        val gson: Gson = GsonBuilder().setLenient().create()
+
+        val retroClient = Retrofit.Builder().baseUrl(Constants.API_BASE_URL.string)
+            .addConverterFactory(GsonConverterFactory.create(gson)).build()
+
+        val retroService = retroClient.create(RetroService::class.java)
+        val call: Call<RetroCourse> = retroService.updateCourse(courseID, retroCourse)
+
+        call.enqueue(object : Callback<RetroCourse> {
+            override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>) {
+                if (!response.isSuccessful) {
+                    Log.d(
+                        "UPDATE COURSE - NOT SUCCESS",
+                        "Course Body: $retroCourse Code: ${response.code()} / Response Body: ${response.body()} "
+                    )
+                }
+
+                Log.d(
+                    "UPDATE COURSE SUCCESS",
+                    " - Response Body: ${response.body()} Code: ${response.code()}"
+                )
+            }
+
+            override fun onFailure(call: Call<RetroCourse>, t: Throwable) {
+                Log.d(
+                    "UPDATE COURSE FAIL",
+                    " - Message: ${t.message} Cause: ${t.cause}"
+                )
+            }
         })
 
     }
 
+    private fun callCourseDataByID(courseID: Int) {
+        val gson: Gson = GsonBuilder().setLenient().create()
 
-    // TODO: Wenn Ort Uni gewählt ist muss der InReturn Punkt Money und die Seekbar ausgeblendet werden
-    // TODO: Bin Checkboxes to Course ID
-    private fun setCheckBoxes(){
-        val checkedLocations = mutableListOf<Boolean>()
+        val retroClient = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL.string)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
 
-        checkedLocations.add(checkboxTeacher.isChecked)
-        checkedLocations.add(checkboxStudent.isChecked)
-        checkedLocations.add(checkboxTHKoeln.isChecked)
-        checkedLocations.add(checkboxOnline.isChecked)
+        val retroService = retroClient.create(RetroService::class.java)
+        val call: Call<RetroCourse> = retroService.getCourseById(courseID)
 
-        val removeIR = InReturns.MONEY.title
+        call.enqueue(object : Callback<RetroCourse> {
 
-        if (checkboxTHKoeln.isChecked){
-                inReturnList.remove(removeIR)
+            override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>) {
+                val body = response.body()
 
-        }
+                if (body != null) {
 
+                    rootView.editCourseTitle.setText(body.title)
 
+                    if (body.description.isBlank())
+                        rootView.editCourseDescrition.setText("Keine Beschreibung vorhanden")
+                    else rootView.editCourseDescrition.setText(body.description)
 
+                    rootView.privateUsageSwitch.isChecked = !body.privateUsage
+
+                    currentModule = body.fk_modules
+                    currentReturn = body.fk_return
+
+                }
+
+                val retroCourseResponse: RetroCourse? = response.body()
+                makeText(context, response.code().toString(), Toast.LENGTH_SHORT).show()
+                Log.d(
+                    "CALL COURSE BY ID SUCCESS",
+                    " - Response Body: $retroCourseResponse Code: ${response.code()}"
+                )
+
+            }
+
+            override fun onFailure(call: Call<RetroCourse>, t: Throwable) {
+                Log.d(
+                    "CALL COURSE BY ID FAIL",
+                    " - Message: ${t.message} Cause: ${t.cause}"
+                )
+
+            }
+        })
     }
 
 

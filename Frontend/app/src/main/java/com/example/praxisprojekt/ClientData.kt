@@ -23,19 +23,19 @@ enum class Mods (val id: Int, var title : String, var desc : String?) {
     BWL1INFMOD (5, "Betriebswirtschaftslehre 1", "Informatik")
 }
 
-enum class TeachLocs (val int: Int, var title : String, var desc : String?){
+enum class TeachLocs (val id: Int, var title : String, var desc : String?){
 
-    TEACH(0, "Beim Lehrer", ""),
-    STUD(1, "Beim Studenten", "Informatik - TI, ITM, MI, AI"),
-    TH(2, "An der TH", "Informatik - TI, ITM, MI, AI"),
-    ONLINE(3, "Online Beratung", "Informatik - WI")
+    TEACH(1, "Beim Tutors", "Unterricht am Standort des Tutors"),
+    STUD(2, "Beim Studenten", "Unterricht am Standort des Lehrers"),
+    TH(3, "An der TH", "Unterricht am Standort des Lehrers"),
+    ONLINE(4, "Online Beratung", "Unterricht über Skype, Whatsapp, etc.")
 }
 
-enum class InReturns (val int: Int, var title : String, var desc : String?){
-    MONEY(0, "Bezahlung", ""),
-    HELP(1, "Hilfe in anderen Fächern", ""),
-    MENSA(2, "Ein Essen in der Mensa", ""),
-    COFFEE(3, "Kaffee", "")
+enum class InReturns (val id: Int, var title : String, var desc : String?){
+    MONEY(1, "Bezahlung", ""),
+    HELP(2, "Hilfe in anderen Fächern", ""),
+    MENSA(3, "Ein Essen in der Mensa", ""),
+    COFFEE(4, "Kaffee", "")
 }
 
 data class Course(
@@ -46,33 +46,13 @@ data class Course(
     val cLocLat: Double,
     val cLocLang: Double,
     val privateUsage: Boolean,
+    val inReturnValue: Int,
 
     val fk_creator: Int, //User
     val fk_return: Int,  //InReturn
     val fk_modules: Int  //Mod
 )
 
-/*Zwischen Tabellen
-data class LocToCourse(
-    val fk_teachLocID: TeachLocs,
-    val fk_courseID: Course
-)
-
-data class UserToModule(
-    val fk_UserID: User,
-    val fk_modID: Mods
-)
-
-data class UserToCourse(
-    val fk_UserID: User,
-    val fk_courseID: Course
-)
-
-*/
-
 enum class Constants(val string: String){
     API_BASE_URL("http://192.168.0.185:5555")
-
-
-
 }
