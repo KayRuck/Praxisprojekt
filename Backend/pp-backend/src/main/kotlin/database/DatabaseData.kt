@@ -2,13 +2,9 @@ package database
 
 import org.jetbrains.exposed.sql.Table
 
-
-
 /**
  * Data Structure for the MySql database
  * */
-// TODO: Fehler bei den Foreign Key ausbessern
-
 
 object Users : Table("Users") {
     val id = integer("userID").autoIncrement("seq_user").primaryKey()
@@ -40,13 +36,6 @@ object InReturns : Table("InReturns") {
     val title = varchar("title", 255)
     val description = varchar("description", 255).nullable()
 }
-/*
-*   TODO: Fremdschlüssel ändern
-*   refernce Funtkioniet nicht mit nicht Prifmitven Datentypen
-*
-*
-*/
-
 
 object Courses : Table("Courses") {
     val id = integer("courseID").autoIncrement("seq_cou").primaryKey()
@@ -56,6 +45,7 @@ object Courses : Table("Courses") {
     val cLocLat = double("latitude")
     val cLocLang = double("longitude")
     val privateUsage = bool("private usage")
+    val inReturnValue = integer("value for InReturn Money")
 
     val fk_creator = reference("creatorID", Users.id)
     val fk_return = reference("returnID", InReturns.id)
@@ -72,9 +62,3 @@ object UserToModules : Table("UserToModules"){
     val fk_UserID = reference("userID", Users.id).primaryKey(0)
     val fk_ModuleID = reference("moduleID", Modules.id).primaryKey(1)
 }
-
-//object UserToCourses : Table("UserToCourses"){
-//    val fk_UserID = reference("userID", Users.id).primaryKey(0)
-//    val fk_CourseID = reference("courseID", Courses.id).primaryKey(1)
-//}
-

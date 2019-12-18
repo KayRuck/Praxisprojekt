@@ -36,7 +36,7 @@ class DatabaseService {
 
     companion object {
         suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
-            transaction { block() }
+                transaction { block() }
         }
     }
 }

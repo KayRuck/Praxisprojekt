@@ -14,6 +14,7 @@ dependencies {
     // Ktor & Ktor-netty (Server)
     implementation "io.ktor:ktor-server-core:1.2.4"
     implementation "io.ktor:ktor-server-netty:1.2.4"
+
     implementation "ch.qos.logback:logback-classic:1.2.3"
 //    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk11"
 

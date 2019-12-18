@@ -18,6 +18,10 @@ object UserService {
     }
 
     suspend fun deleteUser(id: Int) : Boolean = dbQuery {
+        // Module vom User Löschen
+        UserToModules.deleteWhere { UserToModules.fk_UserID eq id }
+
+        // User an sich löschen
         Users.deleteWhere { Users.id eq id } > 0
     }
 
@@ -39,10 +43,10 @@ object UserService {
     }
 
 
-    suspend fun updateUser(user : User) : User {
+    suspend fun updateUser(user: User, id: Int) : User {
 
         dbQuery {
-            Users.update {
+            Users.update({Users.id eq id}){
                 it[username] = user.username
                 it[description] = user.description
                 it[email] = user.email
@@ -52,7 +56,7 @@ object UserService {
                 it[loc_lang] = user.loc_lang
             }
         }
-        return getUserByID(user.id)!!
+        return getUserByID(id)!!
     }
 
     private fun toUser(row: ResultRow): User = User(
