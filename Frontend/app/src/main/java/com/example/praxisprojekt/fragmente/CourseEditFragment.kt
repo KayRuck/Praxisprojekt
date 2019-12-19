@@ -16,13 +16,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceManager
 import com.example.praxisprojekt.*
 import com.example.praxisprojekt.retrofit.RetroCourse
-import com.example.praxisprojekt.retrofit.RetrofitClient
 import com.example.praxisprojekt.viewModels.CourseEditViewModel
 import kotlinx.android.synthetic.main.course_edit_fragment.*
 import kotlinx.android.synthetic.main.course_edit_fragment.view.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
 
@@ -67,7 +63,9 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
 
         // init viewModel observer
         viewModel.showCourses.observe(this, Observer { setCourse(viewModel.retroCourse) })
-        viewModel.showLocationList.observe(this, Observer { setLocationData(viewModel.locationList) })
+        viewModel.showLocationList.observe(
+            this,
+            Observer { setLocationList(viewModel.locationList) })
 
         if (course?.id != null) {
             update = true
@@ -78,73 +76,63 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
         setSeekBar()
         initMSpinner()
         initIRSpinner(inReturnList)
-
-        val nSwitch = rootView.privateUsageSwitch
-        nSwitch.setOnCheckedChangeListener { _, isChecked ->
-
-            val message: String =
-                if (isChecked) "Checked $isChecked - Ausgewählt: Gewerblich"
-                else "Checked $isChecked - Ausgewählt: Privat"
-
-            makeText(context, message, Toast.LENGTH_SHORT).show()
-        }
-
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-        val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
-
-        rootView.checkboxTHKoeln.setOnCheckedChangeListener { _, isChecked ->
-
-            if (isChecked) {
-                // gewerblich deaktivieren
-                rootView.privateUsageSwitch.isChecked = false
-                rootView.privateUsageSwitch.isEnabled = false
-
-                rootView.editCourseSeekbar.isEnabled = false
-
-                initIRSpinner(inReturnListTH)
-
-            } else {
-                // gewerbliche Nutzung aktivieren
-                rootView.privateUsageSwitch.isClickable = true
-                rootView.privateUsageSwitch.isEnabled = true
-
-                rootView.editCourseSeekbar.isEnabled = true
-
-                initIRSpinner(inReturnList)
-            }
-        }
-
-        rootView.editCourseButton.setOnClickListener {
-            val editTitle = rootView.editCourseTitle.text.toString()
-            val editDescription = rootView.editCourseDescrition.text.toString()
-            val editState = true
-            val editPrivateUsage = rootView.privateUsageSwitch.isChecked
-            val value = setSeekBar()
-
-            val retroCourse = RetroCourse(
-                null,
-                editTitle,
-                editDescription,
-                editState,
-                0.0,
-                0.0,
-                editPrivateUsage,
-                value,
-                userID,
-                currentReturn,
-                currentModule,
-                //locationList
-                getLocationList()
-            )
-
-            if (update && course?.id != null) updateCourse(course.id, retroCourse)
-            else createCourse(retroCourse)
-        }
+        initSwitch()
+        checkboxCheck()
+        initCourseButton()
 
         return rootView
     }
+    
+    // TODO Wert anzeigen dem Nutzer richtig anzeigen
+    // TODO Werte Spanne auf 10 bis 50 eingrenzen
+    private fun setSeekBar(): Int {
+        functionTAG = "Seekbar -"
 
-    private fun setLocationData(list: List<String>) {
+        val seek = rootView.editCourseSeekbar
+        var translatedProgress = 0
+
+        seek?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                translatedProgress = progress + 10
+
+                Log.d(
+                    functionTAG + "Progress Changed",
+                    "On Progress Changed - seekbar progress $translatedProgress"
+                )
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                Log.d(functionTAG + "Start", "seekbar touch started")
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                Log.d(functionTAG + "Stopped", "seekbar touch stopped")
+
+            }
+
+        })
+        return translatedProgress
+    }
+
+    private fun setCourse(body: RetroCourse?) {
+        if (body == null) return
+        rootView.editCourseTitle.setText(body.title)
+
+        if (body.description.isBlank()) rootView.editCourseDescrition.setText(R.string.noSuchDescription)
+        else rootView.editCourseDescrition.setText(body.description)
+
+        rootView.privateUsageSwitch.isChecked = !body.privateUsage
+
+        currentModule = body.fk_modules
+        currentReturn = body.fk_return
+    }
+
+    private fun setLocationList(list: List<String>) {
         list.forEach {
             when (it) {
                 TeachLocations.TEACH.title -> checkboxTeacher.isChecked = true
@@ -162,40 +150,6 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
         if (checkboxTHKoeln.isChecked) locations.add(TeachLocations.TH.id)
         if (checkboxOnline.isChecked) locations.add(TeachLocations.ONLINE.id)
         return locations
-    }
-
-    private fun createCourse(retroCourse: RetroCourse) {
-        functionTAG = "CREATE COURSE - "
-
-        val call: Call<RetroCourse> = (RetrofitClient.getRetroService())
-            .createCourse(retroCourse)
-
-        call.enqueue(object : Callback<RetroCourse> {
-            override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>) {
-                val body = response.body()
-
-                if (!response.isSuccessful) {
-                    Log.d(
-                        functionTAG + "NOT SUCCESSFUL",
-                        "Course Body: $retroCourse \n Response Body: $body Code: ${response.code()}"
-                    )
-                }
-
-                Log.d(
-                    functionTAG + "SUCCESSFUL",
-                    "Response Body: $body Code: ${response.code()}"
-                )
-
-            }
-
-            override fun onFailure(call: Call<RetroCourse>, t: Throwable) {
-                Log.d(
-                    functionTAG + "FAIL",
-                    "Message: ${t.message} Cause: ${t.cause}"
-                )
-
-            }
-        })
     }
 
     private fun initIRSpinner(modListe: MutableList<String>) {
@@ -259,84 +213,72 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
         }
     }
 
-    // TODO Wert anzeigen dem Nutzer richtig anzeigen
-    // TODO Werte Spanne auf 10 bis 50 eingrenzen
-    private fun setSeekBar(): Int {
-        functionTAG = "Seekbar -"
+    private fun initCourseButton() {
 
-        val seek = rootView.editCourseSeekbar
-        var translatedProgress = 0
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+        val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
 
-        seek?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(
-                seekBar: SeekBar?,
-                progress: Int,
-                fromUser: Boolean
-            ) {
-                translatedProgress = progress + 10
+        rootView.editCourseButton.setOnClickListener {
+            val editTitle = rootView.editCourseTitle.text.toString()
+            val editDescription = rootView.editCourseDescrition.text.toString()
+            val editState = true
+            val editPrivateUsage = rootView.privateUsageSwitch.isChecked
+            val value = setSeekBar()
 
-                Log.d(
-                    functionTAG + "Progress Changed",
-                    "On Progress Changed - seekbar progress $translatedProgress"
-                )
-            }
+            val retroCourse = RetroCourse(
+                null,
+                editTitle,
+                editDescription,
+                editState,
+                0.0,
+                0.0,
+                editPrivateUsage,
+                value,
+                userID,
+                currentReturn,
+                currentModule,
+                getLocationList()
+            )
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                Log.d(functionTAG + "Start", "seekbar touch started")
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                Log.d(functionTAG + "Stopped", "seekbar touch stopped")
-
-            }
-
-        })
-        return translatedProgress
+            if (update && course?.id != null) viewModel.updateCourse(course.id, retroCourse)
+            else viewModel.createCourse(retroCourse)
+        }
     }
 
-    private fun updateCourse(courseID: Int, retroCourse: RetroCourse) {
-        functionTAG = "UPDATE COURSE - "
+    private fun initSwitch() {
+        val nSwitch = rootView.privateUsageSwitch
+        nSwitch.setOnCheckedChangeListener { _, isChecked ->
 
-        val call: Call<RetroCourse> = (RetrofitClient.getRetroService())
-            .updateCourse(courseID, retroCourse)
+            val message: String =
+                if (isChecked) "Checked $isChecked - Ausgewählt: Gewerblich"
+                else "Checked $isChecked - Ausgewählt: Privat"
 
-        call.enqueue(object : Callback<RetroCourse> {
-            override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>) {
-                if (!response.isSuccessful || response.body() == null) {
-                    Log.d(
-                        functionTAG + "NOT SUCCESS",
-                        "Course Body: $retroCourse \n Response Body: ${response.body()} Code: ${response.code()}"
-                    )
-                    return
-                }
-
-                Log.d(
-                    functionTAG + "SUCCESSFUL",
-                    "Response Body: ${response.body()} Code: ${response.code()}"
-                )
-            }
-
-            override fun onFailure(call: Call<RetroCourse>, t: Throwable) {
-                Log.d(
-                    functionTAG + "FAIL",
-                    " - Message: ${t.message} Cause: ${t.cause}"
-                )
-            }
-        })
+            makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
+    private fun checkboxCheck() {
+        rootView.checkboxTHKoeln.setOnCheckedChangeListener { _, isChecked ->
 
-    private fun setCourse(body: RetroCourse?) {
-        if (body == null) return
-        rootView.editCourseTitle.setText(body.title)
+            if (isChecked) {
+                // gewerblich deaktivieren
+                rootView.privateUsageSwitch.isChecked = false
+                rootView.privateUsageSwitch.isEnabled = false
 
-        if (body.description.isBlank()) rootView.editCourseDescrition.setText(R.string.noSuchDescription)
-        else rootView.editCourseDescrition.setText(body.description)
+                rootView.editCourseSeekbar.isEnabled = false
 
-        rootView.privateUsageSwitch.isChecked = !body.privateUsage
+                initIRSpinner(inReturnListTH)
 
-        currentModule = body.fk_modules
-        currentReturn = body.fk_return
+            } else {
+                // gewerbliche Nutzung aktivieren
+                rootView.privateUsageSwitch.isClickable = true
+                rootView.privateUsageSwitch.isEnabled = true
+
+                rootView.editCourseSeekbar.isEnabled = true
+
+                initIRSpinner(inReturnList)
+            }
+        }
     }
+
 }

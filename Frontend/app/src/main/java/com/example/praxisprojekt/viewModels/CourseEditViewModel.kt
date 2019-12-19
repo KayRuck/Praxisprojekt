@@ -98,6 +98,71 @@ class CourseEditViewModel : ViewModel() {
         })
     }
 
+    fun updateCourse(courseID: Int, retroCourse: RetroCourse) {
+        functionTAG = "UPDATE COURSE - "
+
+        val call: Call<RetroCourse> = (RetrofitClient.getRetroService())
+            .updateCourse(courseID, retroCourse)
+
+        call.enqueue(object : Callback<RetroCourse> {
+            override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>) {
+                if (!response.isSuccessful || response.body() == null) {
+                    Log.d(
+                        functionTAG + "NOT SUCCESS",
+                        "Course Body: $retroCourse \n Response Body: ${response.body()} Code: ${response.code()}"
+                    )
+                    return
+                }
+
+                Log.d(
+                    functionTAG + "SUCCESSFUL",
+                    "Response Body: ${response.body()} Code: ${response.code()}"
+                )
+            }
+
+            override fun onFailure(call: Call<RetroCourse>, t: Throwable) {
+                Log.d(
+                    functionTAG + "FAIL",
+                    " - Message: ${t.message} Cause: ${t.cause}"
+                )
+            }
+        })
+    }
+
+
+    fun createCourse(retroCourse: RetroCourse) {
+        functionTAG = "CREATE COURSE - "
+
+        val call: Call<RetroCourse> = (RetrofitClient.getRetroService())
+            .createCourse(retroCourse)
+
+        call.enqueue(object : Callback<RetroCourse> {
+            override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>) {
+                val body = response.body()
+
+                if (!response.isSuccessful) {
+                    Log.d(
+                        functionTAG + "NOT SUCCESSFUL",
+                        "Course Body: $retroCourse \n Response Body: $body Code: ${response.code()}"
+                    )
+                }
+
+                Log.d(
+                    functionTAG + "SUCCESSFUL",
+                    "Response Body: $body Code: ${response.code()}"
+                )
+
+            }
+
+            override fun onFailure(call: Call<RetroCourse>, t: Throwable) {
+                Log.d(
+                    functionTAG + "FAIL",
+                    "Message: ${t.message} Cause: ${t.cause}"
+                )
+
+            }
+        })
+    }
 
 }
 
