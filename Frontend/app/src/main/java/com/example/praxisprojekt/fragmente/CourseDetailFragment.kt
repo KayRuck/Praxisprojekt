@@ -55,9 +55,10 @@ class CourseDetailFragment(
             5 -> rootView.detailCourseModuleTV.text = Mods.BWL1INFMOD.title
         }
 
-        if (retroCourse.privateUsage) rootView.detailCoursePrivateTV.text =
-            R.string.tutoring_p.toString()
-        else rootView.detailCoursePrivateTV.text = R.string.tutoring_g.toString()
+        if (retroCourse.privateUsage)
+            rootView.detailCoursePrivateTV.text = R.string.tutoring_p.toString()
+        else
+            rootView.detailCoursePrivateTV.text = R.string.tutoring_g.toString()
 
 
         if (retroCourse.fk_creator == userID) rootView.detailCourseCreator.text = userName

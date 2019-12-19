@@ -82,7 +82,7 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
 
         return rootView
     }
-    
+
     // TODO Wert anzeigen dem Nutzer richtig anzeigen
     // TODO Werte Spanne auf 10 bis 50 eingrenzen
     private fun setSeekBar(): Int {

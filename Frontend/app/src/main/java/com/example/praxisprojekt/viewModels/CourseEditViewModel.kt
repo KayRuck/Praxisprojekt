@@ -129,7 +129,6 @@ class CourseEditViewModel : ViewModel() {
         })
     }
 
-
     fun createCourse(retroCourse: RetroCourse) {
         functionTAG = "CREATE COURSE - "
 
