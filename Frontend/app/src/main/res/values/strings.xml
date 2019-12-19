@@ -1,30 +1,44 @@
 <resources>
+    <!-- Navigation -->
     <string name="app_name">Campus Helfer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Benutzername</string>
+    <string name="nav_header_title">Username</string>
 
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Menu -->
     <string name="menu_home">Home</string>
     <string name="menu_notification">Nachrichten</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_display">Kurse</string>
+    <string name="menu_settings">Einstellungen</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="menu_search">Suche</string>
 
-
+    <!-- Login -->
     <string name="login">Login</string>
     <string name="register">Registrieren</string>
     <string name="password_forgot">Passwort Vergessen?</string>
     <string name="logo">Logo</string>
+
+    <!-- User -->
     <string name="username">Username</string>
-    <string name="benutzernamen_angeben">Benutzernamen angeben</string>
-    <string name="menu_display">Kurse</string>
-    <string name="menu_settings">Einstellungen</string>
+    <string name="give_username">Username angeben</string>
+    <string name="update_user_desc">Bearbeite dein Profil</string>
+    <string name="update_user">Profil bearbeiten</string>
+
+    <!-- Filter -->
     <string name="settings_filter">Voreinstellung für Filter</string>
-    <string name="todo">TODO</string>
+
+    <!-- Course -->
+    <string name="tutoring_p">private Nachhilfe</string>
+    <string name="tutoring_g">gewerbliche Nachhilfe</string>
+    <string name="update_course">Kurs bearbeiten</string>
+    <string name="userWithId">User mit der ID</string>
+    <string name="noSuchDescription">Keine Beschreibung vorhanden</string>
 
 </resources>

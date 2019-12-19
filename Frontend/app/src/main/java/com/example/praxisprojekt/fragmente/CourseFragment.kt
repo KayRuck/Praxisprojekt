@@ -16,6 +16,7 @@ import com.example.praxisprojekt.R
 import com.example.praxisprojekt.adapter.CourseAdapter
 import com.example.praxisprojekt.retrofit.RetroCourse
 import com.example.praxisprojekt.retrofit.RetroService
+import com.example.praxisprojekt.retrofit.RetrofitClient
 import com.example.praxisprojekt.viewModels.CourseViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import retrofit2.Call
@@ -25,7 +26,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class CourseFragment(var course: Int) : Fragment() {
+class CourseFragment(private var course: Int) : Fragment() {
 
     private lateinit var viewModel: CourseViewModel
     private lateinit var rootView: View
@@ -85,13 +86,8 @@ class CourseFragment(var course: Int) : Fragment() {
     }
 
     private fun callUserCourses(userID: Int) {
-        val retroClient = Retrofit.Builder()
-            .baseUrl("http://192.168.0.185:5555/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
 
-        val retroService = retroClient.create(RetroService::class.java)
-        val call = retroService.getAllUserCourses(userID)
+        val call = RetrofitClient.getRetroService().getAllUserCourses(userID)
 
         call.enqueue(object : Callback<List<RetroCourse>> {
             override fun onResponse(

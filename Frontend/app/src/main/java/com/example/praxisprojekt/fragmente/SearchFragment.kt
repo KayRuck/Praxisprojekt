@@ -1,24 +1,17 @@
 package com.example.praxisprojekt.fragmente
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
-
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.example.praxisprojekt.R
 import com.example.praxisprojekt.viewModels.SearchViewModel
 import kotlinx.android.synthetic.main.search_fragment.view.*
-import kotlinx.coroutines.runBlocking
 
 class SearchFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = SearchFragment()
-    }
 
     private lateinit var viewModel: SearchViewModel
 

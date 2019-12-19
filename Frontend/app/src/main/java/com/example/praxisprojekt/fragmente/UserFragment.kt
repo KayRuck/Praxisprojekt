@@ -1,6 +1,5 @@
 package com.example.praxisprojekt.fragmente
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,25 +10,18 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.example.praxisprojekt.MainActivity
 import com.example.praxisprojekt.R
-import com.example.praxisprojekt.retrofit.RetroService
 import com.example.praxisprojekt.retrofit.RetroUser
+import com.example.praxisprojekt.retrofit.RetrofitClient
 import com.example.praxisprojekt.viewModels.UserViewModel
 import kotlinx.android.synthetic.main.user_fragment.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-
 
 class UserFragment : Fragment() {
 
     private lateinit var rootView: View
     var modulListe = listOf<String>()
-
-    companion object {
-        fun newInstance() = UserFragment()
-    }
 
     private lateinit var viewModel: UserViewModel
 
@@ -42,12 +34,6 @@ class UserFragment : Fragment() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
 
-        // TODO check if the id is valid > 0
-
-//        if (userID != -1 ) {} Fehler
-//        else if (userID == userIDFragmentProperty) Liefert Eigenen Nutzer
-//        else {} Liefert Anderen Nutzer
-
         getModulesFromUser(userID)
 
         callUserByID(userID, rootView)
@@ -59,8 +45,8 @@ class UserFragment : Fragment() {
             builder.setMessage("Kontaktmöglichkeit auswählen")
             builder.setCancelable(true)
 
-            builder.setPositiveButton("Handynummer") { dialog, id -> dialog.cancel() }
-            builder.setNegativeButton("E-Mailadresse") { dialog, id -> dialog.cancel() }
+            builder.setPositiveButton("Handynummer") { dialog, _ -> dialog.cancel() }
+            builder.setNegativeButton("E-Mailadresse") { dialog, _ -> dialog.cancel() }
 
             val alert = builder.create()
             alert.show()
@@ -70,13 +56,8 @@ class UserFragment : Fragment() {
     }
 
     private fun getModulesFromUser(id: Int) {
-        val retroClient = Retrofit.Builder()
-            .baseUrl("http://192.168.0.185:5555/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
 
-        val retroService = retroClient.create(RetroService::class.java)
-        val call = retroService.getModulesFromUser(id)
+        val call = (RetrofitClient.getRetroService()).getModulesFromUser(id)
 
         call.enqueue(object : Callback<List<String>> {
             override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
@@ -100,41 +81,27 @@ class UserFragment : Fragment() {
 
             override fun onFailure(call: Call<List<String>>, t: Throwable) {
 
-
             }
-
         })
-
-
     }
 
 
     private fun callUserByID(id: Int, rootView: View) {
 
-        val retroClient = Retrofit.Builder()
-            .baseUrl("http://192.168.0.185:5555/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val call = (RetrofitClient.getRetroService()).getUserById(id)
 
-        val retroService = retroClient.create(RetroService::class.java)
-        val call = retroService.getUserById(id)
-
-
-        Log.d("COURSE CALL User", "BEGINN")
 
         call.enqueue(object : Callback<RetroUser> {
             override fun onFailure(call: Call<RetroUser>, t: Throwable) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-            @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<RetroUser>, response: Response<RetroUser>) {
                 val desc = response.body()!!.description
 
 
                 rootView.userUsername.text = response.body()!!.username
-                if (desc == " " || desc == "") rootView.userDescription.text =
-                    "Keine Beschreibung vorhanden"
+                if (desc == " " || desc == "") rootView.userDescription.text = R.string.noSuchDescription.toString()
                 else rootView.userDescription.text = response.body()!!.description
 
             }

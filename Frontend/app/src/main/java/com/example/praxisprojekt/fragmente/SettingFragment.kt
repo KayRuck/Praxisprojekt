@@ -1,20 +1,15 @@
 package com.example.praxisprojekt.fragmente
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.example.praxisprojekt.R
 import com.example.praxisprojekt.viewModels.SettingViewModel
 
 class SettingFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = SettingFragment()
-    }
 
     private lateinit var viewModel: SettingViewModel
 

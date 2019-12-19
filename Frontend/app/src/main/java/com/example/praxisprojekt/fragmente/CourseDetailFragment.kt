@@ -1,6 +1,5 @@
 package com.example.praxisprojekt.fragmente
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +17,7 @@ import com.example.praxisprojekt.retrofit.RetroCourse
 import com.example.praxisprojekt.viewModels.CourseDetailViewModel
 import kotlinx.android.synthetic.main.course_detail_fragment.view.*
 
-class CourseDetailFragment(val retroCourse: RetroCourse, val ownCourse: Boolean = false) :
+class CourseDetailFragment(private val retroCourse: RetroCourse, private val ownCourse: Boolean = false) :
     Fragment() {
 
     companion object {
@@ -27,14 +26,12 @@ class CourseDetailFragment(val retroCourse: RetroCourse, val ownCourse: Boolean 
 
     private lateinit var viewModel: CourseDetailViewModel
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.course_detail_fragment, container, false)
+        val rootView: View = inflater.inflate(R.layout.course_detail_fragment, container, false)
 
-        // TODO: Andere Text Views zu weisen
         Log.d(TAG, "Fragment loaded")
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
@@ -59,14 +56,18 @@ class CourseDetailFragment(val retroCourse: RetroCourse, val ownCourse: Boolean 
             5 -> rootView.detailCourseModuleTV.text = Mods.BWL1INFMOD.title
         }
 
-        if (retroCourse.privateUsage) rootView.detailCoursePrivateTV.text = "Private Nachhilfe"
-        else rootView.detailCoursePrivateTV.text = "Gewerbliche Nachhilfe"
+        if (retroCourse.privateUsage) rootView.detailCoursePrivateTV.text = R.string.tutoring_p.toString()
+        else rootView.detailCoursePrivateTV.text = R.string.tutoring_g.toString()
+
 
         if (retroCourse.fk_creator == userID) rootView.detailCourseCreator.text = userName
-        else rootView.detailCourseCreator.text = "User mit der ID ${retroCourse.fk_creator}"
+        else {
+            val userWithString =  R.string.userWithId.toString() + retroCourse.fk_creator
+            rootView.detailCourseCreator.text = userWithString
+        }
 
         if (ownCourse) {
-            rootView.detailContactButton.text = "Kurs bearbeiten"
+            rootView.detailContactButton.text = R.string.update_course.toString()
             rootView.detailContactButton.setOnClickListener {
                 (activity as MainActivity).loadFragment(CourseEditFragment(retroCourse))
             }
@@ -77,8 +78,8 @@ class CourseDetailFragment(val retroCourse: RetroCourse, val ownCourse: Boolean 
                 builder.setMessage("Kontaktmöglichkeit auswählen")
                 builder.setCancelable(true)
 
-                builder.setPositiveButton("Handynummer") { dialog, id -> dialog.cancel() }
-                builder.setNegativeButton("E-Mailadresse") { dialog, id -> dialog.cancel() }
+                builder.setPositiveButton("Handynummer") { dialog, _ -> dialog.cancel() }
+                builder.setNegativeButton("E-Mailadresse") { dialog, _ -> dialog.cancel() }
 
                 val alert = builder.create()
                 alert.show()

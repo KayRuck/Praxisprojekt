@@ -1,6 +1,6 @@
 package com.example.praxisprojekt.fragmente
 
-import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -16,34 +16,22 @@ import com.example.praxisprojekt.Constants
 import com.example.praxisprojekt.MainActivity
 import com.example.praxisprojekt.Mods
 import com.example.praxisprojekt.R
-import com.example.praxisprojekt.retrofit.RetroService
 import com.example.praxisprojekt.retrofit.RetroUser
+import com.example.praxisprojekt.retrofit.RetrofitClient
 import com.example.praxisprojekt.viewModels.UserEditViewModel
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.user_edit_fragment.*
 import kotlinx.android.synthetic.main.user_edit_fragment.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.regex.Pattern
 
 class UserEditFragment : Fragment() {
 
     private lateinit var rootView: View
 
-    //TODO: Auslagern
-    private val PASSWORD_PATTERN: Pattern = Pattern.compile(
-        "^" +
-                "(?=.*[0-9])" +         //at least 1 digit
-                "(?=.*[a-z])" +         //at least 1 lower case letter
-                "(?=.*[A-Z])" +         //at least 1 upper case letter
-                "(?=.*[@#$%^&+=])" +    //at least 1 special character
-                "(?=\\S+$)" +           //no white spaces
-                ".{4,}" +               //at least 4 characters
-                "$"
+    private val passwordPattern: Pattern = Pattern.compile(
+        Constants.PATTERN.toString()
     )
 
     private lateinit var viewModel: UserEditViewModel
@@ -59,8 +47,8 @@ class UserEditFragment : Fragment() {
         val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
         if (userID != -1) {
             update = true
-            rootView.editUserTextView.text = "Bearbeite dein Profil"
-            rootView.editUserButton.text = "Bearbeiten"
+            rootView.editUserTextView.text = R.string.update_user_desc.toString()
+            rootView.editUserButton.text = R.string.update_user.toString()
             callUserDataByID(userID, rootView)
             getModuleDataFromUser(userID)
 
@@ -92,11 +80,11 @@ class UserEditFragment : Fragment() {
                 )
             Log.d("CREATE USER: ", retroUser.toString())
 
-            rootView.editUserPassword.setOnEditorActionListener { v, actionId, event ->
-                controlPassword(rootView)
+            rootView.editUserPassword.setOnEditorActionListener { _, _, _ ->
+                controlPassword()
             }
-            rootView.editUserPassword2.setOnEditorActionListener { v, actionId, event ->
-                controlPassword(rootView)
+            rootView.editUserPassword2.setOnEditorActionListener { _, _, _ ->
+                controlPassword()
             }
 
             if (update) updateUser(userID, retroUser)
@@ -135,7 +123,7 @@ class UserEditFragment : Fragment() {
                 Log.d("PASSWORD INVALID", "Change Password - is null")
                 false
             }
-            !PASSWORD_PATTERN.matcher(password).matches() -> {
+            !passwordPattern.matcher(password).matches() -> {
                 Log.d(
                     "E-MAIL INVALID",
                     "Change Password - A Upper or Lower Case, Special character or Number is Missing"
@@ -151,28 +139,20 @@ class UserEditFragment : Fragment() {
     }
 
 
-    @SuppressLint("ResourceAsColor")
-    private fun controlPassword(rootView: View): Boolean {
+    private fun controlPassword(): Boolean {
         if (rootView.editUserPassword == rootView.editUserPassword2) {
             makeText(context, "Super Passwort Gleich", Toast.LENGTH_SHORT).show()
-            rootView.editUserPassword2.setBackgroundColor(R.color.light_green)
+            rootView.editUserPassword2.setBackgroundColor(Color.parseColor("#CFE2CF"))
         } else {
             makeText(context, "Schlecht Passwort unterschiedlich", Toast.LENGTH_SHORT).show()
-            rootView.editUserPassword2.setBackgroundColor(R.color.red)
+            rootView.editUserPassword2.setBackgroundColor(Color.parseColor("#E2A6A1"))
         }
         return true
     }
 
     private fun updateUser(userID: Int, retroUser: RetroUser) {
-        val gson: Gson = GsonBuilder().setLenient().create()
 
-        val retroClient = Retrofit.Builder()
-            .baseUrl(Constants.API_BASE_URL.string)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-
-        val retroService = retroClient.create(RetroService::class.java)
-        val call: Call<RetroUser> = retroService.updateUser(userID, retroUser)
+        val call: Call<RetroUser> = (RetrofitClient.getRetroService()).updateUser(userID, retroUser)
 
         call.enqueue(object : Callback<RetroUser> {
             override fun onResponse(call: Call<RetroUser>, response: Response<RetroUser>) {
@@ -206,17 +186,8 @@ class UserEditFragment : Fragment() {
     }
 
     private fun createUser(retroUser: RetroUser) {
-        val gson: Gson = GsonBuilder().setLenient().create()
 
-
-        val retroClient = Retrofit.Builder()
-            .baseUrl(Constants.API_BASE_URL.string)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-
-
-        val retroService = retroClient.create(RetroService::class.java)
-        val call: Call<RetroUser> = retroService.createUser(retroUser)
+        val call: Call<RetroUser> = (RetrofitClient.getRetroService()).createUser(retroUser)
 
         call.enqueue(object : Callback<RetroUser> {
             override fun onResponse(call: Call<RetroUser>, response: Response<RetroUser>) {
@@ -272,16 +243,7 @@ class UserEditFragment : Fragment() {
 
     private fun callUserDataByID(id: Int, rootView: View) {
 
-
-        val gson: Gson = GsonBuilder().setLenient().create()
-
-        val retroClient = Retrofit.Builder()
-            .baseUrl(Constants.API_BASE_URL.string)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-
-        val retroService = retroClient.create(RetroService::class.java)
-        val call = retroService.getUserById(id)
+        val call = (RetrofitClient.getRetroService()).getUserById(id)
 
 
         Log.d("COURSE CALL User", "BEGINN")
@@ -302,7 +264,7 @@ class UserEditFragment : Fragment() {
                 rootView.editUserPassword2.setText(body.password)
 
                 if (body.description.isBlank())
-                    rootView.editUserDescrition.setText("Keine Beschreibung vorhanden")
+                    rootView.editUserDescrition.setText(R.string.noSuchDescription)
                 else rootView.editUserDescrition.setText(body.description)
             }
         })
@@ -310,15 +272,7 @@ class UserEditFragment : Fragment() {
 
     private fun getModuleDataFromUser(id: Int) {
 
-        val gson: Gson = GsonBuilder().setLenient().create()
-
-        val retroClient = Retrofit.Builder()
-            .baseUrl(Constants.API_BASE_URL.string)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-
-        val retroService = retroClient.create(RetroService::class.java)
-        val call = retroService.getModulesFromUser(id)
+        val call = (RetrofitClient.getRetroService()).getModulesFromUser(id)
 
         call.enqueue(object : Callback<List<String>> {
             override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {

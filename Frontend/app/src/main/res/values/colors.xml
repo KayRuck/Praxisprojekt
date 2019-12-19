@@ -4,18 +4,10 @@
     <color name="colorPrimary">#5CDB95</color>
     <color name="colorAccent">#EDF5E1</color>
 
-
-
-    <color name="light_green">#61892F</color>
-    <color name="minti_green">#CCDFCB</color>
-    <color name="lighter_green">#CFE2CF</color>
+    <color name="green">#61892F</color>
+    <color name="light_green">#CFE2CF</color>
     <color name="red">#D62D20</color>
+    <color name="light_red">#E2A6A1</color>
     <color name="white">#FFF</color>
     <color name="black">#000</color>
-<!--
-    <color name="basic_gray">#42221f1f</color>
-    <color name="light_gray">#1c000000</color>
-    <color name="turquoise">#46bdbf</color>
-
--->
 </resources>
