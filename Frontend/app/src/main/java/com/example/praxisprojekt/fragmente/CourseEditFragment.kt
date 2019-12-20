@@ -119,17 +119,17 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
         return translatedProgress
     }
 
-    private fun setCourse(body: RetroCourse?) {
-        if (body == null) return
-        rootView.editCourseTitle.setText(body.title)
+    private fun setCourse(course: RetroCourse?) {
+        if (course == null) return
+        rootView.editCourseTitle.setText(course.title)
 
-        if (body.description.isBlank()) rootView.editCourseDescrition.setText(R.string.noSuchDescription)
-        else rootView.editCourseDescrition.setText(body.description)
+        if (course.description.isBlank()) rootView.editCourseDescrition.setText(R.string.noSuchDescription)
+        else rootView.editCourseDescrition.setText(course.description)
 
-        rootView.privateUsageSwitch.isChecked = !body.privateUsage
+        rootView.privateUsageSwitch.isChecked = !course.privateUsage
 
-        currentModule = body.fk_modules
-        currentReturn = body.fk_return
+        currentModule = course.fk_modules
+        currentReturn = course.fk_return
     }
 
     private fun setLocationList(list: List<String>) {

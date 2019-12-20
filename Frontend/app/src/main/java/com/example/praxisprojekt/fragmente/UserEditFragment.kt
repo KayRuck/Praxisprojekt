@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceManager
 import com.example.praxisprojekt.Constants
 import com.example.praxisprojekt.MainActivity
@@ -29,6 +28,8 @@ import java.util.regex.Pattern
 class UserEditFragment : Fragment() {
 
     private lateinit var rootView: View
+    private var functionTAG = " "
+
 
     private val passwordPattern: Pattern = Pattern.compile(
         Constants.PATTERN.toString()
@@ -49,10 +50,37 @@ class UserEditFragment : Fragment() {
             update = true
             rootView.editUserTextView.text = R.string.update_user_desc.toString()
             rootView.editUserButton.text = R.string.update_user.toString()
-            callUserDataByID(userID, rootView)
+            callUserDataByID(userID)
             getModuleDataFromUser(userID)
-
         }
+
+        initUserButton(userID)
+
+        return rootView
+    }
+
+    private fun setUser(user: RetroUser){
+        rootView.editUserName.setText(user.username)
+        rootView.editUserEMail.setText(user.email)
+        rootView.editUserContact.setText(user.contact)
+        rootView.editUserPassword.setText(user.password)
+        rootView.editUserPassword2.setText(user.password)
+
+        if (user.description.isBlank())
+            rootView.editUserDescrition.setText(R.string.noSuchDescription)
+        else rootView.editUserDescrition.setText(user.description)
+    }
+
+    private fun getModuleList(): List<Int> {
+        val modules = mutableListOf<Int>()
+        if (checkboxAP.isChecked) modules.add(Mods.APMOD.id)
+        if (checkboxMath1.isChecked) modules.add(Mods.MATH1INFMOD.id)
+        if (checkboxMath2.isChecked) modules.add(Mods.MATH2INFMOD.id)
+        if (checkboxBWL.isChecked) modules.add(Mods.BWL1INFMOD.id)
+        return modules
+    }
+
+    private fun initUserButton(userID: Int) {
 
         rootView.editUserButton.setOnClickListener {
             val editName = rootView.editUserName.text.toString()
@@ -61,6 +89,8 @@ class UserEditFragment : Fragment() {
             val editDesc = rootView.editUserDescrition.text.toString()
             val editContact = rootView.editUserContact.text.toString()
 
+            validatePassword(editPass)
+            validateEMail(editEmail)
 
             rootView.editUserTV.text = ("Name: $editName E-Mail: $editEmail " +
                     "Beschreibung: $editDesc Kontakt: $editContact " +
@@ -76,7 +106,7 @@ class UserEditFragment : Fragment() {
                     editContact,
                     0.0,
                     0.0,
-                    getModulelist()
+                    getModuleList()
                 )
             Log.d("CREATE USER: ", retroUser.toString())
 
@@ -90,24 +120,23 @@ class UserEditFragment : Fragment() {
             if (update) updateUser(userID, retroUser)
             else createUser(retroUser)
         }
-        return rootView
     }
 
-
-    //TODO: Add Functional Error in Option 1 and 2
+    // TODO: Add Functional Error in Option 1 and 2
     private fun validateEMail(email: String): Boolean {
+        functionTAG = "VALIDATE E-MAIL - "
 
         return when {
             email.isEmpty() -> {
-                Log.d("E-MAIL INVALID", "Change E-Mail - is null")
+                Log.d(functionTAG + "INVALID", "E-Mail Needed")
                 false
             }
             !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                Log.d("E-MAIL INVALID", "Change E-Mail - A . oder @ is Missing")
+                Log.d(functionTAG + "INVALID", "Change E-Mail - A . oder @ is Missing")
                 false
             }
             else -> {
-                Log.d("E-MAIL VALID", "Everything is Good")
+                Log.d(functionTAG + "VALID", "Everything is Good")
                 true
             }
         }
@@ -115,36 +144,43 @@ class UserEditFragment : Fragment() {
     }
 
     // TODO: Add Functional ERROR in Option 1 and 2
-    // OR https://android.jlelse.eu/quickly-easily-validating-your-text-with-easy-validation-498d7eb54b0b
-    private fun validatePasswort(password: String): Boolean {
+    private fun validatePassword(password: String): Boolean {
+        functionTAG = "VALIDATE PASSWORD - "
 
         return when {
             password.isEmpty() -> {
-                Log.d("PASSWORD INVALID", "Change Password - is null")
+                Log.d(functionTAG + "INVALID", "Password Needed")
                 false
             }
             !passwordPattern.matcher(password).matches() -> {
                 Log.d(
-                    "E-MAIL INVALID",
+                    functionTAG + "INVALID",
                     "Change Password - A Upper or Lower Case, Special character or Number is Missing"
                 )
                 false
             }
             else -> {
-                Log.d("PASSWORD VALID", "Everything is Good")
+                Log.d(functionTAG + "VALID", "Everything is Good")
                 true
             }
         }
 
     }
 
-
     private fun controlPassword(): Boolean {
+        functionTAG = "CONTROL PASSWORD - "
+
         if (rootView.editUserPassword == rootView.editUserPassword2) {
-            makeText(context, "Super Passwort Gleich", Toast.LENGTH_SHORT).show()
+            Log.d(
+                functionTAG + "VALID",
+                "Password first and second equal"
+            )
             rootView.editUserPassword2.setBackgroundColor(Color.parseColor("#CFE2CF"))
         } else {
-            makeText(context, "Schlecht Passwort unterschiedlich", Toast.LENGTH_SHORT).show()
+            Log.d(
+                functionTAG + "INVALID",
+                "Password first and second different"
+            )
             rootView.editUserPassword2.setBackgroundColor(Color.parseColor("#E2A6A1"))
         }
         return true
@@ -226,46 +262,37 @@ class UserEditFragment : Fragment() {
         })
     }
 
-    private fun getModulelist(): List<Int> {
-        val modules = mutableListOf<Int>()
-        if (checkboxAP.isChecked) modules.add(Mods.APMOD.id)
-        if (checkboxMath1.isChecked) modules.add(Mods.MATH1INFMOD.id)
-        if (checkboxMath2.isChecked) modules.add(Mods.MATH2INFMOD.id)
-        if (checkboxBWL.isChecked) modules.add(Mods.BWL1INFMOD.id)
-        return modules
-    }
+    private fun callUserDataByID(userID: Int) {
+        functionTAG = "CALL USER BY ID - "
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(UserEditViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
-    private fun callUserDataByID(id: Int, rootView: View) {
-
-        val call = (RetrofitClient.getRetroService()).getUserById(id)
-
+        val call = (RetrofitClient.getRetroService()).getUserById(userID)
 
         Log.d("COURSE CALL User", "BEGINN")
 
         call.enqueue(object : Callback<RetroUser> {
             override fun onFailure(call: Call<RetroUser>, t: Throwable) {
-                Log.d("COURSE CALL User", "FAIL Message ${t.message} / ${t.cause} ")
-
+                Log.d(
+                    functionTAG + "FAIL",
+                    "Message: ${t.message} / CAUSE: ${t.cause}"
+                )
             }
 
             override fun onResponse(call: Call<RetroUser>, response: Response<RetroUser>) {
-                val body = response.body()!!
+                val body = response.body()
 
-                rootView.editUserName.setText(body.username)
-                rootView.editUserEMail.setText(body.email)
-                rootView.editUserContact.setText(body.contact)
-                rootView.editUserPassword.setText(body.password)
-                rootView.editUserPassword2.setText(body.password)
+                if (!response.isSuccessful || body == null) {
+                    Log.d(
+                        functionTAG + "NOT SUCCESSFUL",
+                        "UserID: $userID \n Response Body: $body Code: ${response.code()}"
+                    )
+                    return
+                }
+                Log.d(
+                    functionTAG + "SUCCESSFUL",
+                    "UserID: $userID Response Body: $body Code: ${response.code()}"
+                )
+                setUser(body)
 
-                if (body.description.isBlank())
-                    rootView.editUserDescrition.setText(R.string.noSuchDescription)
-                else rootView.editUserDescrition.setText(body.description)
             }
         })
     }
@@ -290,8 +317,8 @@ class UserEditFragment : Fragment() {
                 )
 
                 val modulListe = response.body()!!.toList()
-                modulListe.forEach{
-                    when(it) {
+                modulListe.forEach {
+                    when (it) {
                         Mods.APMOD.title -> checkboxAP.isChecked = true
                         Mods.MATH1INFMOD.title -> checkboxMath1.isChecked = true
                         Mods.MATH2INFMOD.title -> checkboxMath2.isChecked = true
