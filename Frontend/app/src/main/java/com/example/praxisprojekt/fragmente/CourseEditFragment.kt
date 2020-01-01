@@ -63,9 +63,7 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
 
         // init viewModel observer
         viewModel.showCourses.observe(this, Observer { setCourse(viewModel.retroCourse) })
-        viewModel.showLocationList.observe(
-            this,
-            Observer { setLocationList(viewModel.locationList) })
+        viewModel.showLocationList.observe(this, Observer { setLocationList(viewModel.locationList) })
 
         if (course?.id != null) {
             update = true
