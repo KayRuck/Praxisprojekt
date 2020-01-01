@@ -18,7 +18,6 @@ class UserEditViewModel : ViewModel() {
     val currentUser = MutableLiveData<Boolean>()
     val currentModules = MutableLiveData<Boolean>()
 
-
     // storage
     var moduleList = listOf<String>()
     lateinit var updateUser: RetroUser

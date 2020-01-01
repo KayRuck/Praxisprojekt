@@ -1,27 +1,23 @@
 package com.example.praxisprojekt.fragmente
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceManager
 import com.example.praxisprojekt.MainActivity
 import com.example.praxisprojekt.R
 import com.example.praxisprojekt.retrofit.RetroUser
-import com.example.praxisprojekt.retrofit.RetrofitClient
 import com.example.praxisprojekt.viewModels.UserViewModel
 import kotlinx.android.synthetic.main.user_fragment.view.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class UserFragment : Fragment() {
 
     private lateinit var rootView: View
-    var modulListe = listOf<String>()
 
     private lateinit var viewModel: UserViewModel
 
@@ -30,13 +26,22 @@ class UserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         rootView = inflater.inflate(R.layout.user_fragment, container, false)
+        viewModel = ViewModelProviders.of(this).get(UserViewModel::class.java)
+
+        viewModel.modules.observe(this, Observer { setModules(viewModel.moduleList) })
+        viewModel.user.observe(this, Observer { setDescription(viewModel.retroUser) })
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
 
-        getModulesFromUser(userID)
+        viewModel.callData(userID)
 
-        callUserByID(userID, rootView)
+        initContactButton()
+
+        return rootView
+    }
+
+    private fun initContactButton() {
         val contactBtn = rootView.userContactButton
 
         contactBtn.setOnClickListener {
@@ -51,63 +56,21 @@ class UserFragment : Fragment() {
             val alert = builder.create()
             alert.show()
         }
-
-        return rootView
     }
 
-    private fun getModulesFromUser(id: Int) {
-
-        val call = (RetrofitClient.getRetroService()).getModulesFromUser(id)
-
-        call.enqueue(object : Callback<List<String>> {
-            override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
-                if (!response.isSuccessful) {
-                    Log.d(
-                        "GET MODULES - NOT SUCCESS",
-                        "Body: ${response.body()} Code: ${response.code()} / ${response.message()} /  ${response.errorBody()}"
-                    )
-                    return
-                }
-
-                Log.d(
-                    "GET MODULES - SUCCESS",
-                    "Body: ${response.body()} Code: ${response.code()} /  ${response.message()} /  ${response.errorBody()}"
-                )
-
-                modulListe = response.body()!!.toList()
-                rootView.userModuleList.text = modulListe.toString()
-
-            }
-
-            override fun onFailure(call: Call<List<String>>, t: Throwable) {
-
-            }
-        })
+    private fun setModules(modules: List<String>) {
+        rootView.userModuleList.text = modules.toString()
     }
 
+    private fun setDescription(retroUser: RetroUser) {
+        val name = retroUser.username
+        val description = retroUser.description
 
-    private fun callUserByID(id: Int, rootView: View) {
-
-        val call = (RetrofitClient.getRetroService()).getUserById(id)
-
-
-        call.enqueue(object : Callback<RetroUser> {
-            override fun onFailure(call: Call<RetroUser>, t: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onResponse(call: Call<RetroUser>, response: Response<RetroUser>) {
-                val desc = response.body()!!.description
-
-
-                rootView.userUsername.text = response.body()!!.username
-                if (desc == " " || desc == "") rootView.userDescription.text = R.string.noSuchDescription.toString()
-                else rootView.userDescription.text = response.body()!!.description
-
-            }
-        })
+        rootView.userUsername.text = name
+        if (description == " " || description == "") rootView.userDescription.text =
+            R.string.noSuchDescription.toString()
+        else rootView.userDescription.text = description
     }
-
 
 }
 
