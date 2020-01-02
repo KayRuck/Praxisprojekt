@@ -38,7 +38,7 @@ class UserEditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.user_edit_fragment, container, false)
+        rootView = inflater.inflate(R.layout.user_edit_fragment, container, false)
         viewModel = ViewModelProviders.of(this).get(UserEditViewModel::class.java)
 
         viewModel.currentUser.observe(this, Observer { setUser(viewModel.updateUser) })
@@ -46,7 +46,11 @@ class UserEditFragment : Fragment() {
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
-        if (userID != -1) setUpdate(userID)
+
+        if (userID != -1) {
+            setUpdate(userID)
+        }
+
         initUserButton(userID, sharedPref)
 
         return rootView
@@ -54,8 +58,8 @@ class UserEditFragment : Fragment() {
 
     private fun setUpdate(userID: Int) {
         update = true
-        rootView.editUserTextView.text = R.string.update_user_desc.toString()
-        rootView.editUserButton.text = R.string.update_user.toString()
+        rootView.editUserTextView.setText(R.string.update_user_desc)
+        rootView.editUserButton.setText(R.string.update_user)
         viewModel.editData(userID)
     }
 
@@ -199,8 +203,6 @@ class UserEditFragment : Fragment() {
         }
 
     }
-
-
 
 
 }
