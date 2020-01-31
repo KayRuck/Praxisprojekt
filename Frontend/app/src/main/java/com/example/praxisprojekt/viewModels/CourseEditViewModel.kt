@@ -33,7 +33,7 @@ class CourseEditViewModel : ViewModel() {
 
         call.enqueue(object : Callback<RetroCourse> {
 
-            override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>) {
+            override fun onResponse(call: Call<RetroCourse>, response: Response<RetroCourse>){
                 val body = response.body()
 
                 if (!response.isSuccessful || body == null) {
@@ -51,6 +51,7 @@ class CourseEditViewModel : ViewModel() {
                     functionTAG + "SUCCESS",
                     "Response Body: $body Code: ${response.code()}"
                 )
+
             }
 
             override fun onFailure(call: Call<RetroCourse>, t: Throwable) {

@@ -121,8 +121,16 @@ class UserEditFragment : Fragment() {
                 controlPassword()
             }
 
-            if (update) viewModel.updateUser(userID, retroUser, sharedPreferences)
-            else viewModel.createUser(retroUser, sharedPreferences)
+            if (update) {
+                viewModel.updateUser(userID, retroUser, sharedPreferences)
+                val fragTransaction1 = fragmentManager!!.beginTransaction()
+                fragTransaction1.replace(R.id.fragment_container, UserFragment() ).commit()
+            }
+            else {
+                viewModel.createUser(retroUser, sharedPreferences)
+                val fragTransaction2 = fragmentManager!!.beginTransaction()
+                fragTransaction2.replace(R.id.fragment_container, LoginFragment() ).commit()
+            }
 
 
         }

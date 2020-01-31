@@ -24,6 +24,10 @@
     <string name="register">Registrieren</string>
     <string name="password_forgot">Passwort Vergessen?</string>
     <string name="logo">Logo</string>
+    <string name="e_mail_adresse">E-Mail Adresse</string>
+    <string name="password">Passwort</string>
+    <string name="val_password">Passwort Valide: </string>
+    <string name="val_email">E-Mail Valide: </string>
 
     <!-- User -->
     <string name="username">Username</string>
@@ -40,5 +44,6 @@
     <string name="update_course">Kurs bearbeiten</string>
     <string name="userWithId">User mit der ID</string>
     <string name="noSuchDescription">Keine Beschreibung vorhanden</string>
+
 
 </resources>
