@@ -1,10 +1,10 @@
 package com.example.praxisprojekt.activities
 
 import android.os.Bundle
-import android.widget.TextView
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.praxisprojekt.R
-import com.example.praxisprojekt.fragmente.UserFragment
+import com.example.praxisprojekt.fragmente.LoginFragment
 
 class LoginActivity : AppCompatActivity() {
 
@@ -12,11 +12,12 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val register: TextView = findViewById(R.id.loginRegister)
-        register.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, UserFragment()).commit()
-        }
+        val container: FrameLayout? = findViewById(R.id.fragment_container_login)
 
+        if (container != null) {
+            if (savedInstanceState != null) return
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container_login, LoginFragment()).commit()
+        }
     }
 }

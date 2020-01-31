@@ -67,8 +67,8 @@ class UserFragment : Fragment() {
         val description = retroUser.description
 
         rootView.userUsername.text = name
-        if (description == " " || description == "") rootView.userDescription.text =
-            R.string.noSuchDescription.toString()
+        if (description == " " || description == "")
+            rootView.userDescription.setText(R.string.noSuchDescription)
         else rootView.userDescription.text = description
     }
 

@@ -5,6 +5,13 @@ import retrofit2.http.*
 
 interface RetroService {
 
+    // String mit Hash Password und ID
+    @GET("/login/{email}")
+    fun getLoginData(@Query("email") email: String) : Call<RetroUser>
+
+    @GET("/login/email/password")
+    fun getLogin() : String
+
     @GET("/users/{id}")
     fun getUserById(@Query("id") id: Int): Call<RetroUser>
 
