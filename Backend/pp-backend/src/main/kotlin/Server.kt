@@ -1,10 +1,7 @@
 import algorithm.MatchingService
 import com.google.gson.Gson
 import data.*
-import database.CourseService
-import database.DatabaseService
-import database.TempTableService
-import database.UserService
+import database.*
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.features.origin
@@ -18,8 +15,12 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import io.ktor.util.pipeline.PipelineContext
 
-
-class Server(databaseService: DatabaseService) {
+/**
+ * Server
+ *
+ * @author Kay Ruck
+ */
+class Server( databaseService: DatabaseService) {
 
     private val gson = Gson()
     private val ok = HttpStatusCode.OK
@@ -164,20 +165,20 @@ class Server(databaseService: DatabaseService) {
 
             }
 
-            post("/course/register") {
-
-                val response = call.receive<String>()
-                println("/course/register - \n $response \n")
-                val responseCourse = Gson().fromJson<Course>(response, Course::class.java)
-                val locationList = Gson().fromJson<LocationList>(response, LocationList::class.java)
-                val newCourse = CourseService.addCourse(responseCourse)
-
-                val locationToCourseList = mutableListOf<LocToCourse>()
-                locationList.locations.forEach { locationToCourseList.add(LocToCourse(newCourse.id, it)) }
-                locationToCourseList.forEach { TempTableService.addLocationToCourse(it) }
-
-                call.respond(created, Gson().toJson(newCourse))
-            }
+                post("/course/register") {
+    
+                    val response = call.receive<String>()
+                    println("/course/register - \n $response \n")
+                    val responseCourse = Gson().fromJson<Course>(response, Course::class.java)
+                    val locationList = Gson().fromJson<LocationList>(response, LocationList::class.java)
+                    val newCourse = CourseService.addCourse(responseCourse)
+    
+                    val locationToCourseList = mutableListOf<LocToCourse>()
+                    locationList.locations.forEach { locationToCourseList.add(LocToCourse(newCourse.id, it)) }
+                    locationToCourseList.forEach { TempTableService.addLocationToCourse(it) }
+    
+                    call.respond(created, Gson().toJson(newCourse))
+                }
 
 
             get("/course/{id}/locations") {
@@ -195,6 +196,11 @@ class Server(databaseService: DatabaseService) {
                     call.respond(ok, gson.toJson(MatchingService.findMatch(it)))
                 }
 
+            }
+
+            get("/login/{email}"){
+                val email = call.parameters["email"]
+                if (email != null) call.respond(ok, gson.toJson(LoginService.getEmailData(email)))
             }
         }
     }

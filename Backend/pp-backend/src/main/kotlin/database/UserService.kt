@@ -59,7 +59,7 @@ object UserService {
         return getUserByID(id)!!
     }
 
-    private fun toUser(row: ResultRow): User = User(
+    public fun toUser(row: ResultRow): User = User(
         id = row[Users.id],
         username = row[Users.username],
         description = row[Users.description],

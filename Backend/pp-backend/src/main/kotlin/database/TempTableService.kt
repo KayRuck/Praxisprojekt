@@ -11,12 +11,6 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 
 object TempTableService {
-    /*
-            SELECT module            
-            FROM Users u, Module m, UserToModules utm
-            WHERE u.id = utm.userID
-                AND m.id = utm.moduleID
-     */
 
     suspend fun getModuleByUser(userID: Int): List<String> = dbQuery {
         (Modules innerJoin UserToModules innerJoin Users)

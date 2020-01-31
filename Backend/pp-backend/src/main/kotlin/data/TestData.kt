@@ -43,7 +43,7 @@ class TestData {
                 it[username] = "Kay"
                 it[email] = "Kayayay.kartoffel@gmx.de"
                 it[description] = " "
-                it[password] = " "
+                it[password] = "Hallo"
                 it[contact] = "0152 0000001"
                 it[loc_lat] = 000.00
                 it[loc_lang] = 000.00
