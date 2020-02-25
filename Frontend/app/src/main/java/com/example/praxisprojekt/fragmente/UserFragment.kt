@@ -15,7 +15,7 @@ import com.example.praxisprojekt.retrofit.RetroUser
 import com.example.praxisprojekt.viewModels.UserViewModel
 import kotlinx.android.synthetic.main.user_fragment.view.*
 
-class UserFragment : Fragment() {
+class UserFragment(private var user: Int) : Fragment() {
 
     private lateinit var rootView: View
 
@@ -36,7 +36,8 @@ class UserFragment : Fragment() {
 
         viewModel.callData(userID)
 
-        initContactButton()
+        if(user == 1) initChangeButton()
+        else if(user == 2) initContactButton()
 
         return rootView
     }
@@ -55,6 +56,17 @@ class UserFragment : Fragment() {
 
             val alert = builder.create()
             alert.show()
+        }
+    }
+
+    private fun initChangeButton() {
+        val changeBtn = rootView.userContactButton
+
+        changeBtn.setText("Profil Bearbeiten")
+
+        changeBtn.setOnClickListener {
+            val fragTransaction = fragmentManager!!.beginTransaction()
+            fragTransaction.replace(R.id.fragment_container, UserEditFragment()).commit()
         }
     }
 
