@@ -94,6 +94,7 @@ class CourseFragment(private var course: Int) : Fragment() {
         val courseAdapter = CourseAdapter(listData) {
             val detailData = listData[it]
             Log.d("$TAG - CREATE ADAPTER", "Course $it clicked")
+            Log.d("$TAG - CREATE ADAPTER", "Course ${detailData.locations} clicked")
             mainActivity.loadFragment(CourseDetailFragment(detailData, ownCourse))
         }
         rec.adapter = courseAdapter
