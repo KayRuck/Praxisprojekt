@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         image.setOnClickListener {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, UserFragment()).commit()
+                .replace(R.id.fragment_container, UserFragment(1)).commit()
         }
 
 
@@ -98,8 +98,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .replace(R.id.fragment_container, CourseFragment(2)).commit()
             }
             R.id.nav_note -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, UserEditFragment()).commit()
+
             }
             R.id.nav_course -> {
                 supportFragmentManager.beginTransaction()
@@ -110,10 +109,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .replace(R.id.fragment_container, SettingFragment()).commit()
             }
             R.id.nav_share -> {
-
+                // TODO: Shared the whole Application
             }
             R.id.nav_send -> {
-
+                // ?
             }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
