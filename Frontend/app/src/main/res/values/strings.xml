@@ -39,11 +39,13 @@
     <string name="settings_filter">Voreinstellung für Filter</string>
 
     <!-- Course -->
-    <string name="tutoring_p">private Nachhilfe</string>
-    <string name="tutoring_g">gewerbliche Nachhilfe</string>
+    <string name="tutoring_p">Private Nachhilfe</string>
+    <string name="tutoring_g">Gewerbliche Nachhilfe</string>
     <string name="update_course">Kurs bearbeiten</string>
-    <string name="userWithId">User mit der ID</string>
+    <string name="userWithId">User mit der ID </string>
     <string name="noSuchDescription">Keine Beschreibung vorhanden</string>
-
+    <string name="enterEmail">Es muss eine E-Mail eingegeben werden</string>
+    <string name="tutoring_bit">Biete Nachhilfe</string>
+    <string name="tutoring_search">Suche Nachhilfe</string>
 
 </resources>
