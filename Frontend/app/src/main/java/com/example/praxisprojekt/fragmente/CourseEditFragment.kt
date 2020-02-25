@@ -14,7 +14,6 @@ import androidx.preference.PreferenceManager
 import com.example.praxisprojekt.*
 import com.example.praxisprojekt.retrofit.RetroCourse
 import com.example.praxisprojekt.viewModels.CourseEditViewModel
-import kotlinx.android.synthetic.main.course_edit_fragment.*
 import kotlinx.android.synthetic.main.course_edit_fragment.view.editCourseButton
 import kotlinx.android.synthetic.main.course_edit_fragment.view.editCourseDescrition
 import kotlinx.android.synthetic.main.course_edit_fragment.view.editCourseSeekbar
@@ -57,13 +56,6 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
         TeachLocations.ONLINE.title
     )
 
-    private val locList2 = mutableListOf(
-        TeachLocations.TEACH.title,
-        TeachLocations.STUD.title,
-        TeachLocations.ONLINE.title
-    )
-
-
     private lateinit var viewModel: CourseEditViewModel
 
     override fun onCreateView(
@@ -77,18 +69,19 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
         viewModel.showCourses.observe(this, Observer { setCourse(viewModel.retroCourse) })
         viewModel.showLocationList.observe(
             this,
-            Observer { setLocationList(viewModel.locationList) })
+            Observer { parseLocationList(viewModel.locationList) })
 
         if (course?.id != null) {
             update = true
-            rootView.editCourseButton.text = R.string.update_course.toString()
+            rootView.editCourseButton.setText(R.string.update_course)
             viewModel.editData(course.id)
         }
 
         setSeekBar()
         initMSpinner()
         initIRSpinner(inReturnList)
-        initSwitch()
+        initSearchSwitch()
+        initPrivateSwitch()
         initCourseButton()
         initMultiAutoCompleteTextView()
 
@@ -223,6 +216,7 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
             val editDescription = rootView.editCourseDescrition.text.toString()
             val editState = true
             val editPrivateUsage = rootView.privateUsageSwitch.isChecked
+            val editSearchUsage = rootView.searchBitSwitch.isChecked
             val value = setSeekBar()
             val list = showInput()
 
@@ -238,7 +232,7 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
                 userID,
                 currentReturn,
                 currentModule,
-                setLocationList(list)
+                parseLocationList(list)
             )
 
             if (update && course?.id != null) viewModel.updateCourse(course.id, retroCourse)
@@ -246,13 +240,37 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
         }
     }
 
-    private fun initSwitch() {
+    private fun initSearchSwitch() {
+        val sSwitch = rootView.searchBitSwitch
+        sSwitch.setOnCheckedChangeListener { _, isChecked ->
+
+            val message: String =
+                if (isChecked) {
+                    sSwitch.text = getString(R.string.tutoring_bit)
+                    "Checked $isChecked - selected: ${sSwitch.text}"
+                } else {
+                    sSwitch.text = getString(R.string.tutoring_search)
+                    "Checked $isChecked - selected: ${sSwitch.text}"
+                }
+
+            makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun initPrivateSwitch() {
         val nSwitch = rootView.privateUsageSwitch
         nSwitch.setOnCheckedChangeListener { _, isChecked ->
 
             val message: String =
-                if (isChecked) "Checked $isChecked - Ausgewählt: Gewerblich"
-                else "Checked $isChecked - Ausgewählt: Privat"
+                if (isChecked) {
+                    locList.removeAt(2)
+                    nSwitch.text = getString(R.string.tutoring_g)
+                    "Checked $isChecked - selected: ${nSwitch.text}"
+                } else {
+                    locList.add(2, TeachLocations.TH.title)
+                    nSwitch.text = getString(R.string.tutoring_p)
+                    "Checked $isChecked - selected: ${nSwitch.text}"
+                }
 
             makeText(context, message, Toast.LENGTH_SHORT).show()
         }
@@ -262,12 +280,10 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
     private fun initMultiAutoCompleteTextView() {
         val multi = rootView.multiAutoCompleteTextView2
 
+        Log.w("CONTEXT", "Context = $context")
+
         context?.let {
-            val sAdapter = ArrayAdapter(
-                it,
-                android.R.layout.simple_list_item_1,
-                uniCheck()
-            )
+            val sAdapter = ArrayAdapter(it, android.R.layout.simple_list_item_1, locList)
             val mToken = MultiAutoCompleteTextView.CommaTokenizer()
 
             multi.setAdapter(sAdapter)
@@ -277,117 +293,28 @@ class CourseEditFragment(private val course: RetroCourse? = null) : Fragment() {
 
     private fun showInput(): List<String> {
         val multi = rootView.multiAutoCompleteTextView2
-
-        functionTAG = "Show Input from MultiAutoCompleteTextView"
         val input = multi.text.toString().trim()
-        val singleInput = input.split("\\s*,\\s*")
+        val singleInput: List<String> = input.split(",")
         val builder = StringBuilder()
 
-        singleInput.forEach { builder.append("Item: $it \n") }
-
-        Log.d(functionTAG, builder.toString())
-
+        singleInput.forEach { builder.append("$it\n") }
 
         return singleInput
     }
 
 
-    private fun setLocationList(list: List<String>): MutableList<Int> {
+    private fun parseLocationList(list: List<String>): MutableList<Int> {
         val locations = mutableListOf<Int>()
 
         list.forEach {
-            when (it) {
+            when (it.trim()) {
                 TeachLocations.TEACH.title -> locations.add(TeachLocations.TEACH.id)
                 TeachLocations.STUD.title -> locations.add(TeachLocations.STUD.id)
                 TeachLocations.TH.title -> locations.add(TeachLocations.TH.id)
                 TeachLocations.ONLINE.title -> locations.add(TeachLocations.ONLINE.id)
             }
         }
-
         return locations
     }
 
-    private fun uniCheck() : MutableList<String>{
-        var list : MutableList<String> = mutableListOf()
-
-        rootView.privateUsageSwitch.setOnClickListener {
-            if(privateUsageSwitch.isChecked) {
-                list = locList2
-            } else list = locList
-        }
-        return list
-    }
-
-
-//     private fun setLocationList(list: List<String>) {
-//        list.forEach {
-//            when (it) {
-//                TeachLocations.TEACH.title -> checkboxTeacher.isChecked = true
-//                TeachLocations.STUD.title -> checkboxStudent.isChecked = true
-//                TeachLocations.TH.title -> checkboxTHKoeln.isChecked = true
-//                TeachLocations.ONLINE.title -> checkboxOnline.isChecked = true
-//            }
-//        }
-
-
-//    }
-
-//    private fun getLocationList(): List<Int> {
-//        val locations = mutableListOf<Int>()
-//        if (checkboxTeacher.isChecked) locations.add(TeachLocations.TEACH.id)
-//        if (checkboxStudent.isChecked) locations.add(TeachLocations.STUD.id)
-//        if (checkboxTHKoeln.isChecked) locations.add(TeachLocations.TH.id)
-//        if (checkboxOnline.isChecked) locations.add(TeachLocations.ONLINE.id)
-//        return locations
-//    }
-
-//    private fun checkboxCheck() {
-//        rootView.checkboxTHKoeln.setOnCheckedChangeListener { _, isChecked ->
-//
-//            if (isChecked) {
-//                // gewerblich deaktivieren
-//                rootView.privateUsageSwitch.isChecked = false
-//                rootView.privateUsageSwitch.isEnabled = false
-//
-//                rootView.editCourseSeekbar.isEnabled = false
-//
-//                initIRSpinner(inReturnListTH)
-//
-//            } else {
-//                // gewerbliche Nutzung aktivieren
-//                rootView.privateUsageSwitch.isClickable = true
-//                rootView.privateUsageSwitch.isEnabled = true
-//
-//                rootView.editCourseSeekbar.isEnabled = true
-//
-//                initIRSpinner(inReturnList)
-//            }
-//        }
-//    }
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
