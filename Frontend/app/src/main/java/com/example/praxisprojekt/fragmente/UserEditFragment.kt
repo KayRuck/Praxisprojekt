@@ -8,6 +8,8 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.MultiAutoCompleteTextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -18,8 +20,15 @@ import com.example.praxisprojekt.Mods
 import com.example.praxisprojekt.R
 import com.example.praxisprojekt.retrofit.RetroUser
 import com.example.praxisprojekt.viewModels.UserEditViewModel
-import kotlinx.android.synthetic.main.user_edit_fragment.*
-import kotlinx.android.synthetic.main.user_edit_fragment.view.*
+import kotlinx.android.synthetic.main.user_edit_fragment.view.editUserButton
+import kotlinx.android.synthetic.main.user_edit_fragment.view.editUserContact
+import kotlinx.android.synthetic.main.user_edit_fragment.view.editUserDescrition
+import kotlinx.android.synthetic.main.user_edit_fragment.view.editUserEMail
+import kotlinx.android.synthetic.main.user_edit_fragment.view.editUserName
+import kotlinx.android.synthetic.main.user_edit_fragment.view.editUserPassword
+import kotlinx.android.synthetic.main.user_edit_fragment.view.editUserPassword2
+import kotlinx.android.synthetic.main.user_edit_fragment.view.editUserTextView
+import kotlinx.android.synthetic.main.user_edit_fragment2.view.*
 import java.util.regex.Pattern
 
 class UserEditFragment : Fragment() {
@@ -29,29 +38,33 @@ class UserEditFragment : Fragment() {
     private var functionTAG = " "
     private var update = false
 
-
-    private val passwordPattern: Pattern = Pattern.compile(
-        Constants.PATTERN.toString()
+    private val moduleList = mutableListOf(
+        Mods.APMOD.title,
+        Mods.MATH1INFMOD.title,
+        Mods.MATH2INFMOD.title,
+        Mods.MATHINFMOD.title,
+        Mods.BWL1INFMOD.title
     )
+
+    private val passwordPattern: Pattern = Pattern.compile(Constants.PATTERN.toString())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        rootView = inflater.inflate(R.layout.user_edit_fragment, container, false)
+        rootView = inflater.inflate(R.layout.user_edit_fragment2, container, false)
         viewModel = ViewModelProviders.of(this).get(UserEditViewModel::class.java)
 
         viewModel.currentUser.observe(this, Observer { setUser(viewModel.updateUser) })
-        viewModel.currentModules.observe(this, Observer { setModules(viewModel.moduleList) })
+        viewModel.currentModules.observe(this, Observer { setModuleList(viewModel.moduleList) })
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val userID = sharedPref.getInt(MainActivity.USER_ID, -1)
 
-        if (userID != -1) {
-            setUpdate(userID)
-        }
+        if (userID != -1) setUpdate(userID)
 
         initUserButton(userID, sharedPref)
+        initMultiAutoCompleteTextView()
 
         return rootView
     }
@@ -75,15 +88,6 @@ class UserEditFragment : Fragment() {
         else rootView.editUserDescrition.setText(user.description)
     }
 
-    private fun getModuleList(): List<Int> {
-        val modules = mutableListOf<Int>()
-        if (checkboxAP.isChecked) modules.add(Mods.APMOD.id)
-        if (checkboxMath1.isChecked) modules.add(Mods.MATH1INFMOD.id)
-        if (checkboxMath2.isChecked) modules.add(Mods.MATH2INFMOD.id)
-        if (checkboxBWL.isChecked) modules.add(Mods.BWL1INFMOD.id)
-        return modules
-    }
-
     private fun initUserButton(userID: Int, sharedPreferences: SharedPreferences) {
 
         rootView.editUserButton.setOnClickListener {
@@ -92,13 +96,10 @@ class UserEditFragment : Fragment() {
             val editPass = rootView.editUserPassword.text.toString()
             val editDesc = rootView.editUserDescrition.text.toString()
             val editContact = rootView.editUserContact.text.toString()
+            val list = showInput()
 
             validatePassword(editPass)
             validateEMail(editEmail)
-
-            rootView.editUserTV.text = ("Name: $editName E-Mail: $editEmail " +
-                    "Beschreibung: $editDesc Kontakt: $editContact " +
-                    "Password: $editPass ")
 
             val retroUser =
                 RetroUser(
@@ -110,7 +111,7 @@ class UserEditFragment : Fragment() {
                     editContact,
                     0.0,
                     0.0,
-                    getModuleList()
+                    setModuleList(list)
                 )
             Log.d("CREATE USER: ", retroUser.toString())
 
@@ -124,12 +125,11 @@ class UserEditFragment : Fragment() {
             if (update) {
                 viewModel.updateUser(userID, retroUser, sharedPreferences)
                 val fragTransaction1 = fragmentManager!!.beginTransaction()
-                fragTransaction1.replace(R.id.fragment_container, UserFragment() ).commit()
-            }
-            else {
+                fragTransaction1.replace(R.id.fragment_container, UserFragment(1)).commit()
+            } else {
                 viewModel.createUser(retroUser, sharedPreferences)
                 val fragTransaction2 = fragmentManager!!.beginTransaction()
-                fragTransaction2.replace(R.id.fragment_container, LoginFragment() ).commit()
+                fragTransaction2.replace(R.id.fragment_container, LoginFragment()).commit()
             }
 
 
@@ -140,9 +140,15 @@ class UserEditFragment : Fragment() {
     private fun validateEMail(email: String): Boolean {
         functionTAG = "VALIDATE E-MAIL - "
 
+        val valemail = rootView.validateEmail
+
         return when {
             email.isEmpty() -> {
                 Log.d(functionTAG + "INVALID", "E-Mail Needed")
+
+                valemail.setTextColor(Color.RED)
+                valemail.setText(getString(R.string.enterEmail))
+
                 false
             }
             !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
@@ -200,17 +206,46 @@ class UserEditFragment : Fragment() {
         return true
     }
 
-    private fun setModules(moduleList: List<String>) {
-        moduleList.forEach {
-            when (it) {
-                Mods.APMOD.title -> checkboxAP.isChecked = true
-                Mods.MATH1INFMOD.title -> checkboxMath1.isChecked = true
-                Mods.MATH2INFMOD.title -> checkboxMath2.isChecked = true
-                Mods.BWL1INFMOD.title -> checkboxBWL.isChecked = true
-            }
-        }
+    private fun initMultiAutoCompleteTextView() {
+        val multi = rootView.multiAutoCompleteTextView
 
+        Log.w("CONTEXT", "Context = $context")
+
+        context?.let {
+            val sAdapter = ArrayAdapter<String>(it, android.R.layout.simple_list_item_1, moduleList)
+            val mToken = MultiAutoCompleteTextView.CommaTokenizer()
+
+            multi.setAdapter(sAdapter)
+            multi.setTokenizer(mToken)
+        }
     }
 
+    private fun showInput(): List<String> {
+        val multi = rootView.multiAutoCompleteTextView
+        val input = multi.text.toString().trim()
+        val singleInput = input.split(",")
+        val builder = StringBuilder()
+
+        singleInput.forEach { builder.append("Item: $it \n") }
+
+        Log.d(functionTAG, builder.toString())
+
+        return singleInput
+    }
+
+    private fun setModuleList(list: List<String>): MutableList<Int> {
+        val modules = mutableListOf<Int>()
+
+        list.forEach {
+            when (it) {
+                Mods.APMOD.title -> modules.add(Mods.APMOD.id)
+                Mods.MATH1INFMOD.title -> modules.add(Mods.MATH1INFMOD.id)
+                Mods.MATH2INFMOD.title -> modules.add(Mods.MATH2INFMOD.id)
+                Mods.MATHINFMOD.title -> modules.add(Mods.MATHINFMOD.id)
+                Mods.BWL1INFMOD.title -> modules.add(Mods.BWL1INFMOD.id)
+            }
+        }
+        return modules
+    }
 
 }

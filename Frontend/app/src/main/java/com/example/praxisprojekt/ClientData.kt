@@ -11,10 +11,10 @@ enum class Mods (val id: Int, var title : String, var desc : String?) {
 
 enum class TeachLocations (val id: Int, var title : String, var desc : String?){
 
-    TEACH(1, "Beim Tutors", "Unterricht am Standort des Tutors"),
-    STUD(2, "Beim Studenten", "Unterricht am Standort des Lehrers"),
-    TH(3, "An der TH", "Unterricht am Standort des Lehrers"),
-    ONLINE(4, "Online Beratung", "Unterricht über Skype, Whatsapp, etc.")
+    TEACH(1, "Tutor", "Unterricht am Standort des Tutors"),
+    STUD(2, "Studenten", "Unterricht am Standort des Lehrers"),
+    TH(3, "Technische Hochschule", "Unterricht am Standort des Lehrers"),
+    ONLINE(4, "Online", "Unterricht über Skype, Whatsapp, etc.")
 }
 
 enum class InReturns (val id: Int, var title : String, var desc : String?){
@@ -26,5 +26,8 @@ enum class InReturns (val id: Int, var title : String, var desc : String?){
 
 enum class Constants(val string: String){
     API_BASE_URL("http://192.168.0.185:5555"),
+    API_BASE_URL_LAPTOP("http://192.168.0.45:5555"),
+    API_BASE_URL_P("http://192.168.0.18:5555"),
+    API_BASE_URL_W("http://192.168.137.1:5555"),
     PATTERN("(^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,})"),
 }

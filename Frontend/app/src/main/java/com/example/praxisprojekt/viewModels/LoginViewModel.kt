@@ -12,7 +12,7 @@ import retrofit2.Response
 
 class LoginViewModel : ViewModel() {
 
-    var functionTAG = " "
+    var functionTAG = "LoginViewModel"
     val oldUser = MutableLiveData<Boolean>()
     val newUser = MutableLiveData<Boolean>()
 
@@ -21,8 +21,9 @@ class LoginViewModel : ViewModel() {
 
 
     fun checkEmail(email: String){
-        functionTAG = "CHECK EMAIL - "
+//        functionTAG = "CHECK EMAIL - "
 
+        Log.d(functionTAG, "check email")
         val call = (RetrofitClient.getRetroService()).getLoginData(email)
 
         call.enqueue(object : Callback<RetroUser> {

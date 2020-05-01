@@ -11,7 +11,7 @@ object RetrofitClient {
     private val gson: Gson = GsonBuilder().setLenient().create()
 
     private fun getRetroClient() = Retrofit.Builder()
-        .baseUrl(Constants.API_BASE_URL.string)
+        .baseUrl(Constants.API_BASE_URL_W.string)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 

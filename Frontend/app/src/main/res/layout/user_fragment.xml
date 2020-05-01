@@ -49,16 +49,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/userUsername" />
 
         <!-- Picture Source https://www.flaticon.com/free-icon/quality_291527-->
-        <ImageView
-                android:id="@+id/userMedal"
-                android:layout_width="45dp"
-                android:layout_height="44dp"
-                android:layout_marginTop="140dp"
-                android:src="@drawable/pic_flaticon_medal_ranked_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.967"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
         <Button
                 android:id="@+id/userContactButton"

@@ -14,7 +14,10 @@ data class RetroUser (
     @SerializedName("loc_lang") val loc_lang : Double,
     @SerializedName("modules") val modules : List<Int>
 
-)
+) {
+    fun isValid() : Boolean = id != null
+    fun isNotValid() :Boolean = !isValid()
+}
 
 data class RetroCourse (
 

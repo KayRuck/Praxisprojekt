@@ -1,18 +1,23 @@
 package com.example.praxisprojekt.fragmente
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.example.praxisprojekt.InReturns
-import com.example.praxisprojekt.MainActivity
-import com.example.praxisprojekt.Mods
-import com.example.praxisprojekt.R
+import com.example.praxisprojekt.*
 import com.example.praxisprojekt.retrofit.RetroCourse
-import kotlinx.android.synthetic.main.course_detail_fragment.view.*
+import kotlinx.android.synthetic.main.course_detail_fragment.view.detailContactButton
+import kotlinx.android.synthetic.main.course_detail_fragment.view.detailCourseCreator
+import kotlinx.android.synthetic.main.course_detail_fragment.view.detailCourseDescriptionTV
+import kotlinx.android.synthetic.main.course_detail_fragment.view.detailCourseInReturnTV
+import kotlinx.android.synthetic.main.course_detail_fragment.view.detailCourseModuleTV
+import kotlinx.android.synthetic.main.course_detail_fragment.view.detailCoursePrivateTV
+import kotlinx.android.synthetic.main.course_detail_fragment.view.detailCourseTitleTV
+import kotlinx.android.synthetic.main.course_detail_fragment2.view.*
 
 class CourseDetailFragment(
     private val retroCourse: RetroCourse,
@@ -26,7 +31,7 @@ class CourseDetailFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        rootView = inflater.inflate(R.layout.course_detail_fragment, container, false)
+        rootView = inflater.inflate(R.layout.course_detail_fragment2, container, false)
 
         setContent()
         return rootView
@@ -39,7 +44,24 @@ class CourseDetailFragment(
         val userName = sharedPref.getString(MainActivity.USER_NAME, "User No.1")
 
         rootView.detailCourseTitleTV.text = retroCourse.title
-        rootView.detailCourseDescriptionTV.text = retroCourse.description
+
+        if (retroCourse.description.isBlank() ||
+            retroCourse.description == getString(R.string.noSuchDescription) )
+            rootView.detailCourseDescriptionTV.text = getString(R.string.noSuchDescription)
+        else rootView.detailCourseDescriptionTV.text = retroCourse.description
+
+        val locList = mutableListOf<String>()
+        Log.d("-- SET Content in Detail", "Location Liste ${retroCourse.locations}")
+        retroCourse.locations.forEach {
+            when (it){
+                1 -> locList.add(TeachLocations.TEACH.title)
+                2 -> locList.add(TeachLocations.STUD.title)
+                3 -> locList.add(TeachLocations.TH.title)
+                4 -> locList.add(TeachLocations.ONLINE.title)
+            }
+        }
+        rootView.courseDetailTeachLocations.text = locList.toString()
+
 
         when (retroCourse.fk_return) {
             1 -> rootView.detailCourseInReturnTV.text = InReturns.MONEY.title
@@ -55,20 +77,19 @@ class CourseDetailFragment(
             5 -> rootView.detailCourseModuleTV.text = Mods.BWL1INFMOD.title
         }
 
-        if (retroCourse.privateUsage)
-            rootView.detailCoursePrivateTV.text = R.string.tutoring_p.toString()
-        else
-            rootView.detailCoursePrivateTV.text = R.string.tutoring_g.toString()
+        if (retroCourse.privateUsage) rootView.detailCoursePrivateTV.setText(R.string.tutoring_p)
+        else rootView.detailCoursePrivateTV.setText(R.string.tutoring_g)
 
 
-        if (retroCourse.fk_creator == userID) rootView.detailCourseCreator.text = userName
+        if (retroCourse.fk_creator == userID) rootView.detailCourseCreator.text = "User: $userName"
         else {
-            val userWithString = R.string.userWithId.toString() + retroCourse.fk_creator
+            val userWithString = getString(R.string.userWithId) + retroCourse.fk_creator
             rootView.detailCourseCreator.text = userWithString
         }
 
+
         if (ownCourse) {
-            rootView.detailContactButton.text = R.string.update_course.toString()
+            rootView.detailContactButton.setText(R.string.update_course)
             rootView.detailContactButton.setOnClickListener {
                 (activity as MainActivity).loadFragment(CourseEditFragment(retroCourse))
             }
