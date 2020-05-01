@@ -27,8 +27,8 @@ object MatchingService {
         val toDelete = mutableListOf<Course>()
         courses.forEach { course ->
             if (!currentMods.any {it.id == course.fk_modules })
-                toDelete.add(course)
-        }
+                toDelete.add(course)        }
+
         courses.removeAll(toDelete)
 
         return courses
