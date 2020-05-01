@@ -32,7 +32,7 @@ class LoginFragment : Fragment() {
     private var retroPass: String = ""
     private var retroID: Int? = null
 
-    var functionTAG = " "
+    private var functionTAG = " "
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
